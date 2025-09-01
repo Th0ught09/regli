@@ -1,5 +1,3 @@
-use std::io;
-
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
@@ -8,8 +6,11 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, List, Paragraph},
 };
+use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
+
+pub mod io_util;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -134,7 +135,8 @@ impl App {
             .iter()
             .enumerate()
             .map(|(i, message)| format!("{}: {}", i, message));
-        let messages = List::new(messages).block(Block::bordered().title("Messages"));
-        frame.render_widget(messages, area);
+        // let messages = List::new(messages).block(Block::bordered().title("Messages"));
+        let message = Paragraph::new(io_util::read_file());
+        frame.render_widget(message, area);
     }
 }
