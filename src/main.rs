@@ -6,6 +6,7 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, List, Paragraph},
 };
+use regex::Regex;
 use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
@@ -27,7 +28,7 @@ struct App {
     /// Current input mode
     input_mode: InputMode,
     /// History of recorded messages
-    messages: Vec<String>,
+    message: String,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -51,7 +52,7 @@ impl App {
                         _ => {}
                     },
                     InputMode::Editing => match key.code {
-                        KeyCode::Enter => self.push_message(),
+                        KeyCode::Enter => self.get_message(),
                         KeyCode::Esc => self.stop_editing(),
                         _ => {
                             self.input.handle_event(&event);
@@ -70,8 +71,8 @@ impl App {
         self.input_mode = InputMode::Normal
     }
 
-    fn push_message(&mut self) {
-        self.messages.push(self.input.value_and_reset());
+    fn get_message(&mut self) {
+        self.message = self.input.value_and_reset();
     }
 
     fn render(&self, frame: &mut Frame) {
@@ -130,12 +131,7 @@ impl App {
     }
 
     fn render_messages(&self, frame: &mut Frame, area: Rect) {
-        let messages = self
-            .messages
-            .iter()
-            .enumerate()
-            .map(|(i, message)| format!("{}: {}", i, message));
-        // let messages = List::new(messages).block(Block::bordered().title("Messages"));
+        let re = Regex::new(r"{}", self.message);
         let message = Paragraph::new(io_util::read_file());
         frame.render_widget(message, area);
     }
