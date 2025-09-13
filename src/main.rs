@@ -4,7 +4,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, List, Paragraph},
+    widgets::{Block, Paragraph},
 };
 use regex::Regex;
 use std::io;
@@ -131,8 +131,15 @@ impl App {
     }
 
     fn render_messages(&self, frame: &mut Frame, area: Rect) {
-        let re = Regex::new(r"{}", self.message);
-        let message = Paragraph::new(io_util::read_file());
-        frame.render_widget(message, area);
+        if self.message != "" {
+            let rstring = r".*{self.message}.*";
+            let re = Regex::new(rstring).unwrap();
+            let message = io_util::read_file();
+            let query = message.as_str();
+            if re.is_match(query) {
+                let message = Paragraph::new(io_util::read_file());
+                frame.render_widget(message, area);
+            }
+        }
     }
 }
