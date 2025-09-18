@@ -7,7 +7,7 @@ use ratatui::{
     widgets::{Block, Paragraph},
 };
 use regex::Regex;
-use std::io;
+use std::{io,env};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -29,6 +29,8 @@ struct App {
     input_mode: InputMode,
     /// History of recorded messages
     message: String,
+    /// files being searched
+    files: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -40,6 +42,7 @@ enum InputMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
+        self.files = env::args().collect();
         loop {
             terminal.draw(|frame| self.render(frame))?;
 
@@ -132,12 +135,11 @@ impl App {
 
     fn render_messages(&self, frame: &mut Frame, area: Rect) {
         if self.message != "" {
-            let rstring = r".*{self.message}.*";
-            let re = Regex::new(rstring).unwrap();
-            let message = io_util::read_file();
+            let re = Regex::new(&self.message).unwrap();
+            let message = io_util::read_file(&self.files);
             let query = message.as_str();
             if re.is_match(query) {
-                let message = Paragraph::new(io_util::read_file());
+                let message = Paragraph::new(query);
                 frame.render_widget(message, area);
             }
         }
