@@ -7,7 +7,7 @@ use ratatui::{
     widgets::{Block, Paragraph},
 };
 use regex::Regex;
-use std::{io,env};
+use std::{env, io};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -43,6 +43,10 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = env::args().collect();
+        let file_iter = self.files.iter();
+        for val in file_iter {
+            println!("{}", val);
+        }
         loop {
             terminal.draw(|frame| self.render(frame))?;
 
