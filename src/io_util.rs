@@ -5,14 +5,12 @@ pub fn read_file(files: &Vec<String>) -> String {
     let file_iter = files.iter();
     for val in file_iter {
         println!("{}", val);
-        let read_text = fs::read_to_string(val).expect("Can't read file");
-        all_text = all_text + &fs::read_to_string(val).expect("Can't read file");
+        let read_text = get_file_contents(val);
+        all_text = all_text + &read_text;
     }
     all_text
 }
 
-pub fn get_file_contents(path: String) -> Result<String, String> {
-    let read_text = fs::read_to_string(path).expect("hi")?;
-    Ok(read_text);
-    Err("".to_string())
+pub fn get_file_contents(path: &String) -> String {
+    fs::read_to_string(path).expect("")
 }
