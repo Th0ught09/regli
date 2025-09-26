@@ -14,3 +14,15 @@ pub fn read_file(files: &Vec<String>) -> String {
 pub fn get_file_contents(path: &String) -> String {
     fs::read_to_string(path).expect("")
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn reads_text() {
+        let path = String::from("src/tests/resources/test.txt");
+        let result = get_file_contents(&path);
+        assert_eq!(result, "hiii\n");
+    }
+}
