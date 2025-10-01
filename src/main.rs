@@ -12,6 +12,7 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 pub mod io_util;
+pub mod parser;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -42,7 +43,7 @@ enum InputMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        self.files = env::args().collect();
+        self.files = parser::Cli::parse();
         let file_iter = self.files.iter();
         for val in file_iter {
             println!("{}", val);
