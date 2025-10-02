@@ -43,7 +43,7 @@ enum InputMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        self.files = parser::Cli::parse();
+        self.files = parser::parse_args();
         let file_iter = self.files.iter();
         for val in file_iter {
             println!("{}", val);
