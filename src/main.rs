@@ -84,12 +84,18 @@ impl App {
     }
 
     fn render(&self, frame: &mut Frame) {
-        let [header_area, input_area, messages_area] = Layout::vertical([
+        let verticals = Layout::vertical([
             Constraint::Length(1),
             Constraint::Length(3),
             Constraint::Min(1),
-        ])
-        .areas(frame.area());
+        ]);
+
+        let [header_area, input_area, mut output_area] = verticals.areas(frame.area());
+
+        let matching_areas =
+            Layout::horizontal([Constraint::Min(1), Constraint::Min(1)]).split(output_area);
+
+        let [matching_area, non_matching_area] = matching_areas.areas(frame.area());
 
         self.render_help_message(frame, header_area);
         self.render_input(frame, input_area);
