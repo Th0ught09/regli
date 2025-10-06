@@ -92,14 +92,19 @@ impl App {
 
         let [header_area, input_area, mut output_area] = verticals.areas(frame.area());
 
-        let matching_areas =
-            Layout::horizontal([Constraint::Min(1), Constraint::Min(1)]).split(output_area);
+        let matching_areas = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)])
+            .split(output_area)
+            .to_vec();
 
-        let [matching_area, non_matching_area] = matching_areas.areas(frame.area());
+        if let [matching_area, non_matching_area] = &matching_areas[..] {
+            self.render_help_message(frame, header_area);
+            self.render_input(frame, input_area);
+            self.render_messages(frame, *matching_area, *non_matching_area);
+        }
 
         self.render_help_message(frame, header_area);
         self.render_input(frame, input_area);
-        self.render_messages(frame, messages_area);
+        // self.render_messages(frame, messages_area);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
@@ -144,7 +149,7 @@ impl App {
         }
     }
 
-    fn render_messages(&self, frame: &mut Frame, area: Rect) {
+    fn render_messages(&self, frame: &mut Frame, area: Rect, non_matching_area: Rect) {
         if self.message != "" {
             let re = Regex::new(&self.message).unwrap();
             let message = io_util::read_file(&self.files);
@@ -152,6 +157,8 @@ impl App {
             if re.is_match(query) {
                 let message = Paragraph::new(query);
                 frame.render_widget(message, area);
+            } else {
+                frame.render_widget(message, non_matching_area)
             }
         }
     }
