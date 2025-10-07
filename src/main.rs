@@ -4,10 +4,10 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, Paragraph},
+    widgets::{Block, Borders, Paragraph},
 };
 use regex::Regex;
-use std::{env, io};
+use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -23,12 +23,16 @@ fn main() -> io::Result<()> {
 
 /// App holds the state of the application
 #[derive(Debug, Default)]
-struct App {
+struct App<'a> {
     /// Current value of the input box
     input: Input,
     /// Current input mode
     input_mode: InputMode,
-    /// History of recorded messages
+    /// matched strings
+    matches: Vec<Paragraph<'a, &'a str>>,
+    /// non matched strings
+    non_matches: Vec<Paragraph<&'a str>>,
+    /// user input
     message: String,
     /// files being searched
     files: Vec<String>,
@@ -41,16 +45,10 @@ enum InputMode {
     Editing,
 }
 
-impl App {
+impl App<'_> {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
-        let file_iter = self.files.iter();
-        for val in file_iter {
-            println!("{}", val);
-        }
         loop {
-            terminal.draw(|frame| self.render(frame))?;
-
             let event = event::read()?;
             if let Event::Key(key) = event {
                 match self.input_mode {
@@ -68,6 +66,7 @@ impl App {
                     },
                 }
             }
+            terminal.draw(|frame| self.render(frame))?;
         }
     }
 
@@ -81,6 +80,8 @@ impl App {
 
     fn get_message(&mut self) {
         self.message = self.input.value_and_reset();
+        self.matches = Vec::new();
+        self.non_matches = Vec::new();
     }
 
     fn render(&self, frame: &mut Frame) {
@@ -90,7 +91,9 @@ impl App {
             Constraint::Min(1),
         ]);
 
-        let [header_area, input_area, mut output_area] = verticals.areas(frame.area());
+        let horizontals = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)]);
+
+        let [header_area, input_area, output_area] = verticals.areas(frame.area());
 
         let matching_areas = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)])
             .split(output_area)
@@ -101,10 +104,6 @@ impl App {
             self.render_input(frame, input_area);
             self.render_messages(frame, *matching_area, *non_matching_area);
         }
-
-        self.render_help_message(frame, header_area);
-        self.render_input(frame, input_area);
-        // self.render_messages(frame, messages_area);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
@@ -155,11 +154,13 @@ impl App {
             let message = io_util::read_file(&self.files);
             let query = message.as_str();
             if re.is_match(query) {
-                let message = Paragraph::new(query);
-                frame.render_widget(message, area);
+                let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
             } else {
-                frame.render_widget(message, non_matching_area)
+                // let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
+                self.non_matches.push(Paragraph::new(query))
             }
+            frame.render_widget(message, non_matching_area);
+            frame.render_widget(message, area);
         }
     }
 }
