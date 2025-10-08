@@ -4,4 +4,6 @@ REGex LIve parser, a tui tool that allows you to filter matches and non matches 
 
 ## Usage
 
+`regli <file.txt>`
+
 ## Install
