@@ -10,3 +10,4 @@ crossterm = "0.29.0"
 tui-input = "*"
 regex = "1.11.2"
 clap = { version = "4.5.48", features = ["derive"] }
+rust-analyzer = "0.0.1"

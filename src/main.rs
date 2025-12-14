@@ -7,7 +7,7 @@ use ratatui::{
     widgets::{Block, Paragraph},
 };
 use regex::Regex;
-use std::{env, io};
+use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
