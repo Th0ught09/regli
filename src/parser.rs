@@ -2,7 +2,13 @@ use clap::Parser;
 
 #[derive(Parser, Debug)]
 #[command(version, about, long_about = None)]
-pub struct Cli {
+struct Cli {
     /// files to be inputted
-    files: Option<Vec<String>>,
+    files: Vec<String>,
+}
+
+pub fn parse_args() -> Vec<String> {
+    let cli = Cli::parse();
+    let files: Vec<String> = cli.files;
+    files
 }
