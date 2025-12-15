@@ -29,9 +29,9 @@ struct App<'a> {
     /// Current input mode
     input_mode: InputMode,
     /// matched strings
-    matches: Vec<Paragraph<'a, &'a str>>,
+    matches: Vec<Paragraph<'a>>,
     /// non matched strings
-    non_matches: Vec<Paragraph<&'a str>>,
+    non_matches: Vec<Paragraph<'a>>,
     /// user input
     message: String,
     /// files being searched
@@ -84,7 +84,7 @@ impl App<'_> {
         self.non_matches = Vec::new();
     }
 
-    fn render(&self, frame: &mut Frame) {
+    fn render(&mut self, frame: &mut Frame) {
         let verticals = Layout::vertical([
             Constraint::Length(1),
             Constraint::Length(3),
@@ -148,19 +148,19 @@ impl App<'_> {
         }
     }
 
-    fn render_messages(&self, frame: &mut Frame, area: Rect, non_matching_area: Rect) {
+    fn render_messages(&mut self, frame: &mut Frame, area: Rect, non_matching_area: Rect) {
         if self.message != "" {
             let re = Regex::new(&self.message).unwrap();
             let message = io_util::read_file(&self.files);
-            let query = message.as_str();
-            if re.is_match(query) {
-                let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
+            if re.is_match(message.as_str()) {
+                let message =
+                    Paragraph::new(message.clone()).block(Block::new().borders(Borders::ALL));
             } else {
                 // let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
-                self.non_matches.push(Paragraph::new(query))
+                self.non_matches.push(Paragraph::new(message.clone()))
             }
-            frame.render_widget(message, non_matching_area);
-            frame.render_widget(message, area);
+            frame.render_widget(&message, non_matching_area);
+            frame.render_widget(&message, area);
         }
     }
 }
