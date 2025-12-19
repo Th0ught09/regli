@@ -153,14 +153,16 @@ impl App<'_> {
             let re = Regex::new(&self.message).unwrap();
             let message = io_util::read_file(&self.files);
             if re.is_match(message.as_str()) {
-                let message =
-                    Paragraph::new(message.clone()).block(Block::new().borders(Borders::ALL));
+                self.matches.push(Paragraph::new(message.clone()))
             } else {
-                // let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
                 self.non_matches.push(Paragraph::new(message.clone()))
             }
-            frame.render_widget(&message, non_matching_area);
-            frame.render_widget(&message, area);
+            for matching_message in &self.matches {
+                frame.render_widget(matching_message, area);
+            }
+            for non_matching_message in &self.non_matches {
+                frame.render_widget(non_matching_message, non_matching_area);
+            }
         }
     }
 }
