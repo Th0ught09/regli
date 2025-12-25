@@ -4,7 +4,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, Borders, Paragraph},
+    widgets::{Block, Paragraph},
 };
 use regex::Regex;
 use std::io;
@@ -90,8 +90,6 @@ impl App<'_> {
             Constraint::Length(3),
             Constraint::Min(1),
         ]);
-
-        let horizontals = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)]);
 
         let [header_area, input_area, output_area] = verticals.areas(frame.area());
 
