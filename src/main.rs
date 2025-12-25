@@ -4,7 +4,7 @@ use ratatui::{
     layout::{Constraint, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, Borders, Paragraph},
+    widgets::{Block, Paragraph},
 };
 use regex::Regex;
 use std::io;
@@ -91,8 +91,6 @@ impl App<'_> {
             Constraint::Min(1),
         ]);
 
-        let horizontals = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)]);
-
         let [header_area, input_area, output_area] = verticals.areas(frame.area());
 
         let matching_areas = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)])
@@ -153,14 +151,16 @@ impl App<'_> {
             let re = Regex::new(&self.message).unwrap();
             let message = io_util::read_file(&self.files);
             if re.is_match(message.as_str()) {
-                let message =
-                    Paragraph::new(message.clone()).block(Block::new().borders(Borders::ALL));
+                self.matches.push(Paragraph::new(message.clone()))
             } else {
-                // let message = Paragraph::new(query).block(Block::new().borders(Borders::ALL));
                 self.non_matches.push(Paragraph::new(message.clone()))
             }
-            frame.render_widget(&message, non_matching_area);
-            frame.render_widget(&message, area);
+            for matching_message in &self.matches {
+                frame.render_widget(matching_message, area);
+            }
+            for non_matching_message in &self.non_matches {
+                frame.render_widget(non_matching_message, non_matching_area);
+            }
         }
     }
 }
