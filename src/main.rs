@@ -1,7 +1,7 @@
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
-    layout::{Constraint, Layout, Rect},
+    layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
@@ -85,23 +85,23 @@ impl App<'_> {
     }
 
     fn render(&mut self, frame: &mut Frame) {
-        let verticals = Layout::vertical([
-            Constraint::Length(1),
-            Constraint::Length(3),
-            Constraint::Min(1),
-        ]);
+        let verticals = Layout::default()
+            .direction(Direction::Vertical)
+            .constraints(vec![
+                Constraint::Length(1),
+                Constraint::Length(3),
+                Constraint::Min(1),
+            ])
+            .split(frame.area());
 
-        let [header_area, input_area, output_area] = verticals.areas(frame.area());
+        let matching_areas = Layout::default()
+            .direction(Direction::Horizontal)
+            .constraints(vec![Constraint::Percentage(50), Constraint::Percentage(50)])
+            .split(verticals[2]);
 
-        let matching_areas = Layout::horizontal([Constraint::Min(1), Constraint::Min(1)])
-            .split(output_area)
-            .to_vec();
-
-        if let [matching_area, non_matching_area] = &matching_areas[..] {
-            self.render_help_message(frame, header_area);
-            self.render_input(frame, input_area);
-            self.render_messages(frame, *matching_area, *non_matching_area);
-        }
+        self.render_help_message(frame, verticals[0]);
+        self.render_input(frame, verticals[1]);
+        self.render_messages(frame, matching_areas[0], matching_areas[1]);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
