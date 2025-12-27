@@ -151,9 +151,11 @@ impl App<'_> {
             let re = Regex::new(&self.message).unwrap();
             let message = io_util::read_file(&self.files);
             if re.is_match(message.as_str()) {
-                self.matches.push(Paragraph::new(message.clone()))
+                self.matches
+                    .push(Paragraph::new(message.clone()).block(Block::bordered()))
             } else {
-                self.non_matches.push(Paragraph::new(message.clone()))
+                self.non_matches
+                    .push(Paragraph::new(message.clone()).block(Block::bordered()))
             }
             for matching_message in &self.matches {
                 frame.render_widget(matching_message, area);
