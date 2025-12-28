@@ -24,4 +24,10 @@ mod tests {
         let result = get_file_contents(&path);
         assert_eq!(result, "hiii\n");
     }
+    #[test]
+    fn reads_file() {
+        let path = String::from("src/tests/resources/test.txt");
+        let result = get_file_contents(&path);
+        assert_eq!(result, "hiii\n");
+    }
 }
