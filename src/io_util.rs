@@ -22,12 +22,21 @@ mod tests {
     fn reads_text() {
         let path = String::from("src/tests/resources/test.txt");
         let result = get_file_contents(&path);
-        assert_eq!(result, "hiii\n");
+        assert_eq!(result, "file1\n");
     }
     #[test]
     fn reads_file() {
         let path = String::from("src/tests/resources/test.txt");
-        let result = get_file_contents(&path);
-        assert_eq!(result, "hiii\n");
+        let result = read_file(&vec![path]);
+        assert_eq!(result, "file1\n");
+    }
+    #[test]
+    fn reads_multiple_files() {
+        let paths = vec![
+            String::from("src/tests/resources/test.txt"),
+            String::from("src/tests/resources/test_mult.txt"),
+        ];
+        let result = read_file(&paths);
+        assert_eq!(result, "file1\nfile2\n");
     }
 }
