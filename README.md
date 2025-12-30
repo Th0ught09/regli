@@ -6,4 +6,16 @@ REGex LIve parser, a tui tool that allows you to filter matches and non matches 
 
 `regli <file.txt>`
 
-## Install
+## Local Install
+
+Build locally using
+
+```bash
+cargo build
+```
+
+Test using
+
+```bash
+cargo test
+```
