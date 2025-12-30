@@ -1,11 +1,11 @@
 use std::fs;
 
-pub fn read_file(files: &Vec<String>) -> String {
-    let mut all_text: String = String::new();
+pub fn read_file(files: &Vec<String>) -> Vec<String> {
+    let mut all_text: Vec<String> = Vec::new();
     let file_iter = files.iter();
     for val in file_iter {
         let read_text = get_file_contents(val);
-        all_text = all_text + &read_text;
+        all_text.push(read_text);
     }
     all_text
 }

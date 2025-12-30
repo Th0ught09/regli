@@ -149,13 +149,15 @@ impl App<'_> {
     fn render_messages(&mut self, frame: &mut Frame, area: Rect, non_matching_area: Rect) {
         if self.message != "" {
             let re = Regex::new(&self.message).unwrap();
-            let message = io_util::read_file(&self.files);
-            if re.is_match(message.as_str()) {
-                self.matches
-                    .push(Paragraph::new(message.clone()).block(Block::bordered()))
-            } else {
-                self.non_matches
-                    .push(Paragraph::new(message.clone()).block(Block::bordered()))
+            let messages = io_util::read_file(&self.files);
+            for message in messages {
+                if re.is_match(message.as_str()) {
+                    self.matches
+                        .push(Paragraph::new(message.clone()).block(Block::bordered()))
+                } else {
+                    self.non_matches
+                        .push(Paragraph::new(message.clone()).block(Block::bordered()))
+                }
             }
             for matching_message in &self.matches {
                 frame.render_widget(matching_message, area);
