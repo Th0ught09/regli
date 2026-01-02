@@ -28,7 +28,7 @@ mod tests {
     fn reads_file() {
         let path = String::from("src/tests/resources/test.txt");
         let result = read_file(&vec![path]);
-        assert_eq!(result, "file1\n");
+        assert_eq!(result, vec!["file1\n"]);
     }
     #[test]
     fn reads_multiple_files() {
@@ -37,6 +37,6 @@ mod tests {
             String::from("src/tests/resources/test_mult.txt"),
         ];
         let result = read_file(&paths);
-        assert_eq!(result, "file1\nfile2\n");
+        assert_eq!(result, vec!["file1\n", "file2\n"]);
     }
 }
