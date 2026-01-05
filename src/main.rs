@@ -23,15 +23,15 @@ fn main() -> io::Result<()> {
 
 /// App holds the state of the application
 #[derive(Debug, Default)]
-struct App<'a> {
+struct App {
     /// Current value of the input box
     input: Input,
     /// Current input mode
     input_mode: InputMode,
     /// matched strings
-    matches: Vec<Paragraph<'a>>,
+    matches: Vec<String>,
     /// non matched strings
-    non_matches: Vec<Paragraph<'a>>,
+    non_matches: Vec<String>,
     /// user input
     message: String,
     /// files being searched
@@ -45,7 +45,7 @@ enum InputMode {
     Editing,
 }
 
-impl App<'_> {
+impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
         loop {
@@ -146,25 +146,35 @@ impl App<'_> {
         }
     }
 
-    fn render_messages(&mut self, frame: &mut Frame, area: Rect, non_matching_area: Rect) {
+    fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
         if self.message != "" {
             let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
             for message in messages {
                 if re.is_match(message.as_str()) {
-                    self.matches
-                        .push(Paragraph::new(message.clone()).block(Block::bordered()))
+                    self.matches.push(message.clone())
                 } else {
-                    self.non_matches
-                        .push(Paragraph::new(message.clone()).block(Block::bordered()))
+                    self.non_matches.push(message.clone())
                 }
+                // .push(Paragraph::new(message.clone()).block(Block::bordered()))
             }
+            let mut final_matches = String::new();
+            let mut final_non_matches = String::new();
             for matching_message in &self.matches {
-                frame.render_widget(matching_message, area);
+                final_matches.push_str(matching_message);
+                final_matches.push('\n');
             }
             for non_matching_message in &self.non_matches {
-                frame.render_widget(non_matching_message, non_matching_area);
+                final_non_matches.push_str(non_matching_message);
             }
+            frame.render_widget(
+                Paragraph::new(final_matches).block(Block::bordered()),
+                matching_area,
+            );
+            frame.render_widget(
+                Paragraph::new(final_non_matches).block(Block::bordered()),
+                non_matching_area,
+            );
         }
     }
 }
