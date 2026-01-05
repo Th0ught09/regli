@@ -17,7 +17,7 @@ pub fn get_file_contents(path: &String) -> Vec<String> {
     let mut result = Vec::new();
     let mut word = String::new();
     for char in lines.chars() {
-        if (char == '\n') {
+        if char == '\n' {
             result.push(word);
             word = String::from("");
         } else {
