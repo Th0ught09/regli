@@ -11,3 +11,5 @@ tui-input = "*"
 regex = "1.11.2"
 clap = { version = "4.5.48", features = ["derive"] }
 rust-analyzer = "0.0.1"
+clippy = "0.0.302"
+fmt = "0.1.0"
