@@ -147,7 +147,7 @@ impl App {
     }
 
     fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
-        if self.message != "" {
+        if !self.message.is_empty() {
             let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
             for message in messages {

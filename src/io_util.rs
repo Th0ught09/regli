@@ -1,6 +1,6 @@
 use std::fs;
 
-pub fn read_file(files: &Vec<String>) -> Vec<String> {
+pub fn read_file(files: &[String]) -> Vec<String> {
     let mut all_text: Vec<String> = Vec::new();
     let file_iter = files.iter();
     for val in file_iter {
