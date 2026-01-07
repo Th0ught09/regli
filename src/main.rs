@@ -148,6 +148,8 @@ impl App {
 
     fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
         if self.message != "" {
+            self.matches.clear();
+            self.non_matches.clear();
             let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
             for message in messages {
@@ -156,7 +158,6 @@ impl App {
                 } else {
                     self.non_matches.push(message.clone())
                 }
-                // .push(Paragraph::new(message.clone()).block(Block::bordered()))
             }
             let mut final_matches = String::new();
             let mut final_non_matches = String::new();
@@ -166,6 +167,7 @@ impl App {
             }
             for non_matching_message in &self.non_matches {
                 final_non_matches.push_str(non_matching_message);
+                final_matches.push('\n');
             }
             frame.render_widget(
                 Paragraph::new(final_matches).block(Block::bordered()),
