@@ -40,7 +40,7 @@ mod tests {
     #[test]
     fn reads_file() {
         let path = String::from("src/tests/resources/test.txt");
-        let result = read_file(&vec![path]);
+        let result = read_file(&[path]);
         assert_eq!(result, vec!["file1"]);
     }
     #[test]
