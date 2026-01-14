@@ -13,6 +13,7 @@ use tui_input::backend::crossterm::EventHandler;
 
 pub mod io_util;
 pub mod parser;
+pub mod matching_utils;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -152,13 +153,7 @@ impl App {
             self.non_matches.clear();
             let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
-            for message in messages {
-                if re.is_match(message.as_str()) {
-                    self.matches.push(message.clone())
-                } else {
-                    self.non_matches.push(message.clone())
-                }
-            }
+            matching_utils::updated_matches(&self.message, &mut self.matches, &mut self.non_matches, messages);
             let mut final_matches = String::new();
             let mut final_non_matches = String::new();
             for matching_message in &self.matches {
