@@ -4,3 +4,4 @@ repos:
     hooks:
       - id: cargo-check
         args: ["--workspace"]
+      - id: fmt
