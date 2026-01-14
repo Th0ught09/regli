@@ -12,8 +12,8 @@ use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 pub mod io_util;
-pub mod parser;
 pub mod matching_utils;
+pub mod parser;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -23,6 +23,7 @@ fn main() -> io::Result<()> {
 }
 
 /// App holds the state of the application
+///
 #[derive(Debug, Default)]
 struct App {
     /// Current value of the input box
@@ -153,7 +154,12 @@ impl App {
             self.non_matches.clear();
             let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
-            matching_utils::updated_matches(&self.message, &mut self.matches, &mut self.non_matches, messages);
+            matching_utils::updated_matches(
+                &self.message,
+                &mut self.matches,
+                &mut self.non_matches,
+                messages,
+            );
             let mut final_matches = String::new();
             let mut final_non_matches = String::new();
             for matching_message in &self.matches {
