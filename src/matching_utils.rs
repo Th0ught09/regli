@@ -15,3 +15,17 @@ pub fn updated_matches(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn pushes_match() {
+        let message = "h".to_string();
+        let matches: Vec<&mut String> = Vec::new();
+        let non_matches: Vec<&mut String> = Vec::new();
+        let messages = vec!["hi", "gq"];
+        updated_matches(&message, matches, non_matches, messages);
+    }
+}
