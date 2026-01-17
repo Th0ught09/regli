@@ -26,6 +26,6 @@ mod tests {
         let mut matches: Vec<String> = Vec::new();
         let mut non_matches: Vec<String> = Vec::new();
         let messages = vec![String::from("hi"), String::from("gq")];
-        updated_matches(&message, &mut matches, &mut non_matches, messages);
+        update_matches(&message, &mut matches, &mut non_matches, messages);
     }
 }
