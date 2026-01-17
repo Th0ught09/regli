@@ -6,12 +6,12 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
 };
+use regex::Regex;
 use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 pub mod io_util;
-pub mod matching_utils;
 pub mod parser;
 
 fn main() -> io::Result<()> {
@@ -22,7 +22,6 @@ fn main() -> io::Result<()> {
 }
 
 /// App holds the state of the application
-///
 #[derive(Debug, Default)]
 struct App {
     /// Current value of the input box
@@ -148,16 +147,24 @@ impl App {
     }
 
     fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
+<<<<<<< HEAD
         if !self.message.is_empty() {
+||||||| 2ec7b7b
+        if self.message != "" {
+=======
+        if self.message != "" {
             self.matches.clear();
             self.non_matches.clear();
+>>>>>>> c39addf913a52cec564c68673b4efab46eaff848
+            let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
-            matching_utils::update_matches(
-                &self.message,
-                &mut self.matches,
-                &mut self.non_matches,
-                messages,
-            );
+            for message in messages {
+                if re.is_match(message.as_str()) {
+                    self.matches.push(message.clone())
+                } else {
+                    self.non_matches.push(message.clone())
+                }
+            }
             let mut final_matches = String::new();
             let mut final_non_matches = String::new();
             for matching_message in &self.matches {
