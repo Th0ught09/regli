@@ -152,9 +152,8 @@ impl App {
         if !self.message.is_empty() {
             self.matches.clear();
             self.non_matches.clear();
-            let re = Regex::new(&self.message).unwrap();
             let messages = io_util::read_file(&self.files);
-            matching_utils::updated_matches(
+            matching_utils::update_matches(
                 &self.message,
                 &mut self.matches,
                 &mut self.non_matches,

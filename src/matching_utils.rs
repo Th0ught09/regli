@@ -1,6 +1,6 @@
 use regex::Regex;
 
-pub fn updated_matches(
+pub fn update_matches(
     message: &String,
     matches: &mut Vec<String>,
     non_matches: &mut Vec<String>,
@@ -23,9 +23,9 @@ mod tests {
     #[test]
     fn pushes_match() {
         let message = "h".to_string();
-        let matches: Vec<&mut String> = Vec::new();
-        let non_matches: Vec<&mut String> = Vec::new();
-        let messages = vec!["hi", "gq"];
-        updated_matches(&message, matches, non_matches, messages);
+        let mut matches: Vec<String> = Vec::new();
+        let mut non_matches: Vec<String> = Vec::new();
+        let messages = vec![String::from("hi"), String::from("gq")];
+        updated_matches(&message, &mut matches, &mut non_matches, messages);
     }
 }
