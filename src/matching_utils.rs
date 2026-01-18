@@ -16,6 +16,7 @@ pub fn update_matches(
     }
 }
 
+#[allow(dead_code)]
 fn test_matches() -> (Vec<String>, Vec<String>) {
     let message = "h".to_string();
     let mut matches: Vec<String> = Vec::new();
