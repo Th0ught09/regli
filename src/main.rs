@@ -151,12 +151,11 @@ impl App {
         if !self.message.is_empty() {
             self.matches.clear();
             self.non_matches.clear();
-            let messages = io_util::read_file(&self.files);
             matching_utils::update_matches(
                 &self.message,
                 &mut self.matches,
                 &mut self.non_matches,
-                messages,
+                io_util::read_file(&self.files),
             );
             let mut final_matches = String::new();
             let mut final_non_matches = String::new();
