@@ -165,7 +165,7 @@ impl App {
             }
             for non_matching_message in &self.non_matches {
                 final_non_matches.push_str(non_matching_message);
-                final_matches.push('\n');
+                final_non_matches.push('\n');
             }
             frame.render_widget(
                 Paragraph::new(final_matches).block(Block::bordered()),
