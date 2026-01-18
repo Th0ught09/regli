@@ -16,16 +16,23 @@ pub fn update_matches(
     }
 }
 
+fn test_matches() -> (Vec<String>, Vec<String>) {
+    let message = "h".to_string();
+    let mut matches: Vec<String> = Vec::new();
+    let mut non_matches: Vec<String> = Vec::new();
+    let messages = vec![String::from("hi"), String::from("gq")];
+    update_matches(&message, &mut matches, &mut non_matches, messages);
+    (matches, non_matches)
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn pushes_match() {
-        let message = "h".to_string();
-        let mut matches: Vec<String> = Vec::new();
-        let mut non_matches: Vec<String> = Vec::new();
-        let messages = vec![String::from("hi"), String::from("gq")];
-        update_matches(&message, &mut matches, &mut non_matches, messages);
+        let (matches, non_matches) = test_matches();
+        assert_eq!(matches, vec!["hi"]);
+        assert_eq!(non_matches, vec!["gq"]);
     }
 }
