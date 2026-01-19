@@ -148,33 +148,31 @@ impl App {
     }
 
     fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
-        if !self.message.is_empty() {
-            self.matches.clear();
-            self.non_matches.clear();
-            matching_utils::update_matches(
-                &self.message,
-                &mut self.matches,
-                &mut self.non_matches,
-                io_util::read_file(&self.files),
-            );
-            let mut final_matches = String::new();
-            let mut final_non_matches = String::new();
-            for matching_message in &self.matches {
-                final_matches.push_str(matching_message);
-                final_matches.push('\n');
-            }
-            for non_matching_message in &self.non_matches {
-                final_non_matches.push_str(non_matching_message);
-                final_non_matches.push('\n');
-            }
-            frame.render_widget(
-                Paragraph::new(final_matches).block(Block::bordered()),
-                matching_area,
-            );
-            frame.render_widget(
-                Paragraph::new(final_non_matches).block(Block::bordered()),
-                non_matching_area,
-            );
+        self.matches.clear();
+        self.non_matches.clear();
+        matching_utils::update_matches(
+            &self.message,
+            &mut self.matches,
+            &mut self.non_matches,
+            io_util::read_file(&self.files),
+        );
+        let mut final_matches = String::new();
+        let mut final_non_matches = String::new();
+        for matching_message in &self.matches {
+            final_matches.push_str(matching_message);
+            final_matches.push('\n');
         }
+        for non_matching_message in &self.non_matches {
+            final_non_matches.push_str(non_matching_message);
+            final_non_matches.push('\n');
+        }
+        frame.render_widget(
+            Paragraph::new(final_matches).block(Block::bordered()),
+            matching_area,
+        );
+        frame.render_widget(
+            Paragraph::new(final_non_matches).block(Block::bordered()),
+            non_matching_area,
+        );
     }
 }
