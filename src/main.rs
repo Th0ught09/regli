@@ -50,6 +50,7 @@ impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
         loop {
+            terminal.draw(|frame| self.render(frame))?;
             let event = event::read()?;
             if let Event::Key(key) = event {
                 match self.input_mode {
@@ -67,7 +68,6 @@ impl App {
                     },
                 }
             }
-            terminal.draw(|frame| self.render(frame))?;
         }
     }
 
