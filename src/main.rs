@@ -49,8 +49,8 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
+        terminal.draw(|frame| self.render(frame))?;
         loop {
-            terminal.draw(|frame| self.render(frame))?;
             let event = event::read()?;
             if let Event::Key(key) = event {
                 match self.input_mode {
@@ -64,6 +64,8 @@ impl App {
                         KeyCode::Esc => self.stop_editing(),
                         _ => {
                             self.input.handle_event(&event);
+                            self.get_message();
+                            terminal.draw(|frame| self.render(frame))?;
                         }
                     },
                 }
@@ -80,7 +82,7 @@ impl App {
     }
 
     fn get_message(&mut self) {
-        self.message = self.input.value_and_reset();
+        self.message = self.input.value().to_string();
         self.matches = Vec::new();
         self.non_matches = Vec::new();
     }
