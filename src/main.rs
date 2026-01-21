@@ -13,6 +13,7 @@ use tui_input::backend::crossterm::EventHandler;
 pub mod io_util;
 pub mod matching_utils;
 pub mod parser;
+pub mod vec_utils;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -158,16 +159,8 @@ impl App {
             &mut self.non_matches,
             io_util::read_file(&self.files),
         );
-        let mut final_matches = String::new();
-        let mut final_non_matches = String::new();
-        for matching_message in &self.matches {
-            final_matches.push_str(matching_message);
-            final_matches.push('\n');
-        }
-        for non_matching_message in &self.non_matches {
-            final_non_matches.push_str(non_matching_message);
-            final_non_matches.push('\n');
-        }
+        let final_matches = vec_utils::push_strs(&self.matches);
+        let final_non_matches = vec_utils::push_strs(&self.non_matches);
         frame.render_widget(
             Paragraph::new(final_matches).block(Block::bordered()),
             matching_area,
