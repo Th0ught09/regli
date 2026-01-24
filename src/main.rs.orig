@@ -6,14 +6,13 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
 };
+use regex::Regex;
 use std::io;
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
 pub mod io_util;
-pub mod matching_utils;
 pub mod parser;
-pub mod vec_utils;
 
 fn main() -> io::Result<()> {
     let mut terminal = ratatui::init();
@@ -23,7 +22,6 @@ fn main() -> io::Result<()> {
 }
 
 /// App holds the state of the application
-///
 #[derive(Debug, Default)]
 struct App {
     /// Current value of the input box
@@ -50,7 +48,6 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
-        terminal.draw(|frame| self.render(frame))?;
         loop {
             let event = event::read()?;
             if let Event::Key(key) = event {
@@ -65,12 +62,11 @@ impl App {
                         KeyCode::Esc => self.stop_editing(),
                         _ => {
                             self.input.handle_event(&event);
-                            self.get_message();
-                            terminal.draw(|frame| self.render(frame))?;
                         }
                     },
                 }
             }
+            terminal.draw(|frame| self.render(frame))?;
         }
     }
 
@@ -83,7 +79,7 @@ impl App {
     }
 
     fn get_message(&mut self) {
-        self.message = self.input.value().to_string();
+        self.message = self.input.value_and_reset();
         self.matches = Vec::new();
         self.non_matches = Vec::new();
     }
@@ -151,23 +147,42 @@ impl App {
     }
 
     fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
-        self.matches.clear();
-        self.non_matches.clear();
-        matching_utils::update_matches(
-            &self.message,
-            &mut self.matches,
-            &mut self.non_matches,
-            io_util::read_file(&self.files),
-        );
-        let final_matches = vec_utils::push_strs(&self.matches);
-        let final_non_matches = vec_utils::push_strs(&self.non_matches);
-        frame.render_widget(
-            Paragraph::new(final_matches).block(Block::bordered()),
-            matching_area,
-        );
-        frame.render_widget(
-            Paragraph::new(final_non_matches).block(Block::bordered()),
-            non_matching_area,
-        );
+<<<<<<< HEAD
+        if !self.message.is_empty() {
+||||||| 2ec7b7b
+        if self.message != "" {
+=======
+        if self.message != "" {
+            self.matches.clear();
+            self.non_matches.clear();
+>>>>>>> c39addf913a52cec564c68673b4efab46eaff848
+            let re = Regex::new(&self.message).unwrap();
+            let messages = io_util::read_file(&self.files);
+            for message in messages {
+                if re.is_match(message.as_str()) {
+                    self.matches.push(message.clone())
+                } else {
+                    self.non_matches.push(message.clone())
+                }
+            }
+            let mut final_matches = String::new();
+            let mut final_non_matches = String::new();
+            for matching_message in &self.matches {
+                final_matches.push_str(matching_message);
+                final_matches.push('\n');
+            }
+            for non_matching_message in &self.non_matches {
+                final_non_matches.push_str(non_matching_message);
+                final_matches.push('\n');
+            }
+            frame.render_widget(
+                Paragraph::new(final_matches).block(Block::bordered()),
+                matching_area,
+            );
+            frame.render_widget(
+                Paragraph::new(final_non_matches).block(Block::bordered()),
+                non_matching_area,
+            );
+        }
     }
 }
