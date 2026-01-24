@@ -17,4 +17,8 @@ mod tests {
     fn handles_none() {
         assert_eq!(push_strs(&vec![]), "");
     }
+    #[test]
+    fn handles_one() {
+        assert_eq!(push_strs(&vec![String::from("line1")]), "line1\n");
+    }
 }
