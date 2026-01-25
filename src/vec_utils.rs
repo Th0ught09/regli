@@ -21,4 +21,11 @@ mod tests {
     fn handles_one() {
         assert_eq!(push_strs(&vec![String::from("line1")]), "line1\n");
     }
+    #[test]
+    fn handles_two_lines() {
+        assert_eq!(
+            push_strs(&vec![String::from("line1"), String::from("line2")]),
+            "line1\nline2\n"
+        );
+    }
 }
