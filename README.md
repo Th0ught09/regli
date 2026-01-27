@@ -4,7 +4,12 @@ REGex LIve parser, a tui tool that allows you to filter matches and non matches 
 
 ## Usage
 
-`regli <file.txt>`
+`regli <file.txt>` to render all contents of the file into the tool
+
+Simply type the regular expression into the box and
+
+- all matches will appear on the left side
+- all non-matches will appear on the right side
 
 ## Local Install
 
