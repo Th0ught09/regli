@@ -13,6 +13,7 @@ use tui_input::backend::crossterm::EventHandler;
 pub mod io_util;
 pub mod matching_utils;
 pub mod parser;
+pub mod shell_utils;
 pub mod vec_utils;
 
 fn main() -> io::Result<()> {
@@ -50,6 +51,9 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
+        if self.files.is_empty() {
+            shell_utils::start_shell_search();
+        }
         terminal.draw(|frame| self.render(frame))?;
         loop {
             let event = event::read()?;
