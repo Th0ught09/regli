@@ -13,6 +13,7 @@ use tui_input::backend::crossterm::EventHandler;
 pub mod io_util;
 pub mod matching_utils;
 pub mod parser;
+pub mod shell_utils;
 pub mod vec_utils;
 
 fn main() -> io::Result<()> {
@@ -38,6 +39,8 @@ struct App {
     message: String,
     /// files being searched
     files: Vec<String>,
+    /// the list of items to be matched
+    items: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -50,6 +53,11 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
+        if self.files.is_empty() {
+            self.items = shell_utils::start_shell_search();
+        } else {
+            self.items = io_util::read_file(&self.files)
+        }
         terminal.draw(|frame| self.render(frame))?;
         loop {
             let event = event::read()?;
@@ -157,7 +165,7 @@ impl App {
             &self.message,
             &mut self.matches,
             &mut self.non_matches,
-            io_util::read_file(&self.files),
+            self.items.clone(),
         );
         let final_matches = vec_utils::push_strs(&self.matches);
         let final_non_matches = vec_utils::push_strs(&self.non_matches);
