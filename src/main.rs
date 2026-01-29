@@ -54,7 +54,7 @@ impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         self.files = parser::parse_args();
         if self.files.is_empty() {
-            shell_utils::start_shell_search();
+            self.items = shell_utils::start_shell_search();
         } else {
             self.items = io_util::read_file(&self.files)
         }
