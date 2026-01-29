@@ -39,6 +39,8 @@ struct App {
     message: String,
     /// files being searched
     files: Vec<String>,
+    /// the list of items to be matched
+    items: Vec<String>,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -53,6 +55,8 @@ impl App {
         self.files = parser::parse_args();
         if self.files.is_empty() {
             shell_utils::start_shell_search();
+        } else {
+            self.items = io_util::read_file(&self.files)
         }
         terminal.draw(|frame| self.render(frame))?;
         loop {
@@ -161,7 +165,7 @@ impl App {
             &self.message,
             &mut self.matches,
             &mut self.non_matches,
-            io_util::read_file(&self.files),
+            self.items.clone(),
         );
         let final_matches = vec_utils::push_strs(&self.matches);
         let final_non_matches = vec_utils::push_strs(&self.non_matches);
