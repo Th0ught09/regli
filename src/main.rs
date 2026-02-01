@@ -39,6 +39,8 @@ struct App {
     message: String,
     /// files being searched
     files: Vec<String>,
+    /// dir to search for files
+    dir: String,
     /// the list of items to be matched
     items: Vec<String>,
 }
@@ -52,7 +54,8 @@ enum InputMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        self.files = parser::parse_args();
+        let args = parser::parse_args();
+        self.files = parser::get_files(args);
         if self.files.is_empty() {
             self.items = shell_utils::start_shell_search();
         } else {

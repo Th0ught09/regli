@@ -11,6 +11,7 @@ pub fn start_shell_search() -> Vec<String> {
 
 pub fn get_dir_files() -> Vec<String> {
     let files = Vec::new();
+
     files
 }
 
