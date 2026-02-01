@@ -1,4 +1,4 @@
-use std::{env, fs};
+use std::{env, fs, path::Path};
 
 pub fn start_shell_search() -> Vec<String> {
     let mut files = Vec::new();
@@ -7,4 +7,12 @@ pub fn start_shell_search() -> Vec<String> {
         files.push(path.unwrap().path().display().to_string());
     }
     files
+}
+
+pub fn is_path_file(path: String) -> bool {
+    Path::new(path.as_str()).is_file()
+}
+
+pub fn is_path_dir(path: String) -> bool {
+    Path::new(path.as_str()).is_dir()
 }
