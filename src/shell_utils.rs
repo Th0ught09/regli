@@ -9,6 +9,11 @@ pub fn start_shell_search() -> Vec<String> {
     files
 }
 
+pub fn get_dir_files() -> Vec<String> {
+    let files = Vec::new();
+    files
+}
+
 pub fn is_path_file(path: String) -> bool {
     Path::new(path.as_str()).is_file()
 }
