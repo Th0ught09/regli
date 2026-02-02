@@ -4,17 +4,15 @@ use std::{
 };
 
 pub fn start_shell_search(dir: PathBuf) -> Vec<String> {
-    let mut files = Vec::new();
     let paths = fs::read_dir(dir).unwrap();
+    get_dir_files(paths)
+}
+
+pub fn get_dir_files(paths: fs::ReadDir) -> Vec<String> {
+    let mut files = Vec::new();
     for path in paths {
         files.push(path.unwrap().path().display().to_string());
     }
-    files
-}
-
-pub fn get_dir_files() -> Vec<String> {
-    let files = Vec::new();
-
     files
 }
 
