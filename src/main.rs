@@ -1,3 +1,4 @@
+use clap::Parser;
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
@@ -6,7 +7,7 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
 };
-use std::io;
+use std::{env, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -23,6 +24,15 @@ fn main() -> io::Result<()> {
     result
 }
 
+#[derive(Parser, Debug)]
+#[command(version, about, long_about = None)]
+pub struct Cli {
+    /// files to be inputted
+    files: Vec<String>,
+    /// Directory to search
+    #[arg(short, long)]
+    dir: String,
+}
 /// App holds the state of the application
 ///
 #[derive(Debug, Default)]
@@ -54,10 +64,14 @@ enum InputMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        let args = parser::parse_args();
-        self.files = parser::get_files(args);
+        let args = Cli::parse();
+        self.files = args.files;
         if self.files.is_empty() {
-            self.items = shell_utils::start_shell_search();
+            if args.dir.is_empty() {
+                self.items = shell_utils::start_shell_search(env::current_dir().unwrap());
+            } else {
+                self.items = shell_utils::start_shell_search(PathBuf::from(args.dir));
+            }
         } else {
             self.items = io_util::read_file(&self.files)
         }

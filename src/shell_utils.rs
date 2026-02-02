@@ -1,6 +1,9 @@
-use std::{env, fs, path::Path};
+use std::{
+    env, fs,
+    path::{Path, PathBuf},
+};
 
-pub fn start_shell_search() -> Vec<String> {
+pub fn start_shell_search(dir: PathBuf) -> Vec<String> {
     let mut files = Vec::new();
     let paths = fs::read_dir(env::current_dir().unwrap()).unwrap();
     for path in paths {
