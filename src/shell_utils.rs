@@ -23,3 +23,20 @@ pub fn is_path_file(path: String) -> bool {
 pub fn is_path_dir(path: String) -> bool {
     Path::new(path.as_str()).is_dir()
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    #[ignore]
+    fn test_gets_dir_file() {
+        assert_eq!(
+            get_dir_files(fs::read_dir(PathBuf::from("./src/tests/resources")).unwrap()),
+            vec![
+                String::from("lines.txt"),
+                String::from("test.txt"),
+                String::from("test_mult.txt"),
+            ],
+        )
+    }
+}
