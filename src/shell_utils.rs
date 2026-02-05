@@ -16,6 +16,10 @@ pub fn get_dir_files(paths: fs::ReadDir) -> Vec<String> {
     files
 }
 
+pub fn has_correct_extension(path: PathBuf) -> bool {
+    true
+}
+
 pub fn is_path_file(path: String) -> bool {
     Path::new(path.as_str()).is_file()
 }
@@ -37,6 +41,13 @@ mod tests {
                 String::from("test.txt"),
                 String::from("test_mult.txt"),
             ],
+        )
+    }
+    #[test]
+    #[ignore]
+    fn test_filters_extension() {
+        assert!(
+            !(has_correct_extension(PathBuf::from("./src/tests/shell_resources/executable.exe"))),
         )
     }
 }
