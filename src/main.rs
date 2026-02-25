@@ -65,12 +65,14 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
+        let extensions = vec![".txt"];
         self.files = args.files;
         if self.files.is_empty() {
             if args.dir.is_empty() {
-                self.items = shell_utils::start_shell_search(env::current_dir().unwrap());
+                self.items =
+                    shell_utils::start_shell_search(env::current_dir().unwrap(), extensions);
             } else {
-                self.items = shell_utils::start_shell_search(PathBuf::from(args.dir));
+                self.items = shell_utils::start_shell_search(PathBuf::from(args.dir), extensions);
             }
         } else {
             self.items = io_util::read_file(&self.files)
