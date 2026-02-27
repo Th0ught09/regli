@@ -7,7 +7,7 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
 };
-use std::{env, io, path::PathBuf};
+use std::{env, fmt, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -32,6 +32,9 @@ pub struct Cli {
     /// Directory to search
     #[arg(short, long)]
     dir: String,
+    /// Extensions to parse
+    #[arg(short, long)]
+    extensions: Vec<String>,
 }
 /// App holds the state of the application
 ///
@@ -65,7 +68,10 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
-        let extensions = vec![".txt"];
+        let mut extensions = args.extensions;
+        if extensions.is_empty() {
+            extensions = vec![String::from("txt")]
+        }
         self.files = args.files;
         if self.files.is_empty() {
             if args.dir.is_empty() {

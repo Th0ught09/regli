@@ -3,12 +3,12 @@ use std::{
     path::{Path, PathBuf},
 };
 
-pub fn start_shell_search(dir: PathBuf, valid_extensions: Vec<&str>) -> Vec<String> {
+pub fn start_shell_search(dir: PathBuf, valid_extensions: Vec<String>) -> Vec<String> {
     let paths = fs::read_dir(dir).unwrap();
     get_dir_files(paths, valid_extensions)
 }
 
-pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<&str>) -> Vec<String> {
+pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> Vec<String> {
     let mut files = Vec::new();
     for path in paths {
         let path = path.unwrap().path();
@@ -19,8 +19,8 @@ pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<&str>) -> Vec<Str
     files
 }
 
-pub fn has_correct_extension(path: &PathBuf, valid_extensions: &Vec<&str>) -> bool {
-    valid_extensions.contains(&path.extension().unwrap().to_str().unwrap())
+pub fn has_correct_extension(path: &Path, valid_extensions: &[String]) -> bool {
+    valid_extensions.contains(&path.extension().unwrap().to_str().unwrap().to_string())
 }
 
 pub fn is_path_file(path: String) -> bool {
@@ -40,7 +40,7 @@ mod tests {
         assert_eq!(
             get_dir_files(
                 fs::read_dir(PathBuf::from("./src/tests/resources")).unwrap(),
-                vec![""]
+                vec![String::from("")]
             ),
             vec![
                 String::from("lines.txt"),
@@ -55,7 +55,7 @@ mod tests {
         assert!(
             !(has_correct_extension(
                 &PathBuf::from("./src/tests/shell_resources/executable.exe"),
-                &vec![""]
+                &vec![String::from("")]
             ))
         )
     }
