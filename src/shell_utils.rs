@@ -50,12 +50,11 @@ mod tests {
         )
     }
     #[test]
-    #[ignore]
-    fn test_filters_extension() {
+    fn test_filters_extension_ignores() {
         assert!(
             !(has_correct_extension(
                 &PathBuf::from("./src/tests/shell_resources/executable.exe"),
-                &vec![String::from("")]
+                &[String::from("")]
             ))
         )
     }
