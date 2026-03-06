@@ -7,7 +7,7 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, Paragraph},
 };
-use std::{env, fmt, io, path::PathBuf};
+use std::{env, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
@@ -52,8 +52,6 @@ struct App {
     message: String,
     /// files being searched
     files: Vec<String>,
-    /// dir to search for files
-    dir: String,
     /// the list of items to be matched
     items: Vec<String>,
 }
