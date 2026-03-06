@@ -58,4 +58,11 @@ mod tests {
             ))
         )
     }
+    #[test]
+    fn test_filters_extension_finds() {
+        assert!(has_correct_extension(
+            &PathBuf::from("./src/tests/shell_resources/file.txt"),
+            &[String::from("txt")]
+        ))
+    }
 }
