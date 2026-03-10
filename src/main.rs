@@ -33,9 +33,12 @@ pub struct Cli {
     /// Directory to search
     #[arg(short, long)]
     dir: String,
+    /// Whether to use extension filtering
+    #[arg(short, long)]
+    use_extensions: bool,
     /// Extensions to parse
     #[arg(short, long)]
-    extensions: Vec<String>,
+    given_extensions: Vec<String>,
 }
 /// App holds the state of the application
 ///
@@ -67,9 +70,12 @@ enum InputMode {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
-        let mut extensions = args.extensions;
-        if extensions.is_empty() {
+        let extensions;
+        if args.given_extensions.is_empty() && args.use_extensions {
             extensions = const_utils::get_default_extensions();
+            print!("hit");
+        } else {
+            extensions = args.given_extensions;
         }
         self.files = args.files;
         if self.files.is_empty() {
