@@ -11,6 +11,7 @@ use std::{env, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 
+pub mod const_utils;
 pub mod io_util;
 pub mod matching_utils;
 pub mod parser;
@@ -68,7 +69,7 @@ impl App {
         let args = Cli::parse();
         let mut extensions = args.extensions;
         if extensions.is_empty() {
-            extensions = vec![String::from("txt")]
+            extensions = const_utils::get_default_extensions();
         }
         self.files = args.files;
         if self.files.is_empty() {
