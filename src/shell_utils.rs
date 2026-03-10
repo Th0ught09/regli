@@ -20,7 +20,11 @@ pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> Vec<S
 }
 
 pub fn has_correct_extension(path: &Path, valid_extensions: &[String]) -> bool {
-    valid_extensions.contains(&path.extension().unwrap().to_str().unwrap().to_string())
+    if !(valid_extensions.is_empty()) {
+        valid_extensions.contains(&path.extension().unwrap().to_str().unwrap().to_string())
+    } else {
+        true
+    }
 }
 
 pub fn is_path_file(path: String) -> bool {
