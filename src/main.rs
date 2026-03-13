@@ -73,7 +73,6 @@ impl App {
         let extensions;
         if args.given_extensions.is_empty() && args.use_extensions {
             extensions = const_utils::get_default_extensions();
-            print!("hit");
         } else {
             extensions = args.given_extensions;
         }
