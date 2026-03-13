@@ -5,5 +5,6 @@ pub fn get_default_extensions() -> Vec<String> {
         String::from("org"),
         String::from("csv"),
         String::from("tsv"),
+        String::from("py"),
     ]
 }
