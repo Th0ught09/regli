@@ -1,6 +1,7 @@
 # Regli
 
-REGex LIve parser, a tui tool that allows you to filter matches and non matches in file inputs
+REGex LIve parser, a tui tool that allows you to filter matches and non
+matches in file inputs
 
 ## Usage
 
@@ -29,3 +30,12 @@ Test using
 ```bash
 cargo test
 ```
+
+## Options
+
+The following cli options are available
+
+| Option | Meaning |
+| `-u` | Filter files in shell mode based on extension |
+| `-g` | Pass in extensions to filter by |
+| `-d` | Which directory to start in for shell mode |
