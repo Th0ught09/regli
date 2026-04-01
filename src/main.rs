@@ -67,6 +67,13 @@ enum InputMode {
     Editing,
 }
 
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+enum SearchMode {
+    #[default]
+    Shell,
+    File,
+}
+
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
