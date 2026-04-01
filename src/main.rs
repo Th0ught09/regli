@@ -3,9 +3,9 @@ use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
     layout::{Constraint, Direction, Layout, Rect},
-    style::{Color, Style, Stylize},
+    style::{Color, Modifier, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, ListState, Paragraph},
+    widgets::{Block, List, ListState, Paragraph},
 };
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
@@ -95,7 +95,7 @@ impl App {
             self.items = io_util::read_file(&self.files)
         }
         let mut list_state = ListState::default().with_selected(Some(0));
-        terminal.draw(|frame| self.render(frame))?;
+        terminal.draw(|frame| self.render(frame, &mut list_state))?;
         loop {
             let event = event::read()?;
             if let Event::Key(key) = event {
@@ -111,7 +111,7 @@ impl App {
                         _ => {
                             self.input.handle_event(&event);
                             self.get_message();
-                            terminal.draw(|frame| self.render(frame))?;
+                            terminal.draw(|frame| self.render(frame, &mut list_state))?;
                         }
                     },
                 }
@@ -133,7 +133,7 @@ impl App {
         self.non_matches = Vec::new();
     }
 
-    fn render(&mut self, frame: &mut Frame) {
+    fn render(&mut self, frame: &mut Frame, list_state: &mut ListState) {
         let verticals = Layout::default()
             .direction(Direction::Vertical)
             .constraints(vec![
@@ -151,6 +151,13 @@ impl App {
         self.render_help_message(frame, verticals[0]);
         self.render_input(frame, verticals[1]);
         self.render_messages(frame, matching_areas[0], matching_areas[1]);
+        let items = ["Item 1", "Item 2", "Item 3", "Item 4"];
+        let list = List::new(items)
+            .style(Color::White)
+            .highlight_style(Modifier::REVERSED)
+            .highlight_symbol("> ");
+
+        frame.render_stateful_widget(list, matching_areas[1], list_state);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
