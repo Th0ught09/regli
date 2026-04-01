@@ -150,14 +150,14 @@ impl App {
 
         self.render_help_message(frame, verticals[0]);
         self.render_input(frame, verticals[1]);
-        self.render_messages(frame, matching_areas[0], matching_areas[1]);
+        self.render_messages(frame, list_state, matching_areas[0], matching_areas[1]);
         let items = ["Item 1", "Item 2", "Item 3", "Item 4"];
         let list = List::new(items)
             .style(Color::White)
             .highlight_style(Modifier::REVERSED)
             .highlight_symbol("> ");
 
-        frame.render_stateful_widget(list, matching_areas[1], list_state);
+        // frame.render_stateful_widget(list, matching_areas[1], list_state);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
@@ -202,7 +202,13 @@ impl App {
         }
     }
 
-    fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
+    fn render_messages(
+        &mut self,
+        frame: &mut Frame,
+        list_state: &mut ListState,
+        matching_area: Rect,
+        non_matching_area: Rect,
+    ) {
         self.matches.clear();
         self.non_matches.clear();
         matching_utils::update_matches(
@@ -213,9 +219,10 @@ impl App {
         );
         let final_matches = vec_utils::push_strs(&self.matches);
         let final_non_matches = vec_utils::push_strs(&self.non_matches);
-        frame.render_widget(
-            Paragraph::new(final_matches).block(Block::bordered()),
+        frame.render_stateful_widget(
+            List::new(final_matches.split_whitespace()).block(Block::bordered()),
             matching_area,
+            list_state,
         );
         frame.render_widget(
             Paragraph::new(final_non_matches).block(Block::bordered()),
