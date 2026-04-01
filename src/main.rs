@@ -5,7 +5,7 @@ use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, Paragraph},
+    widgets::{Block, ListState, Paragraph},
 };
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
@@ -94,6 +94,7 @@ impl App {
         } else {
             self.items = io_util::read_file(&self.files)
         }
+        let mut list_state = ListState::default().with_selected(Some(0));
         terminal.draw(|frame| self.render(frame))?;
         loop {
             let event = event::read()?;
