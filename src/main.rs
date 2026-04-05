@@ -156,8 +156,6 @@ impl App {
             .style(Color::White)
             .highlight_style(Modifier::REVERSED)
             .highlight_symbol("> ");
-
-        // frame.render_stateful_widget(list, matching_areas[1], list_state);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
