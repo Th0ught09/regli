@@ -151,11 +151,6 @@ impl App {
         self.render_help_message(frame, verticals[0]);
         self.render_input(frame, verticals[1]);
         self.render_messages(frame, list_state, matching_areas[0], matching_areas[1]);
-        let items = ["Item 1", "Item 2", "Item 3", "Item 4"];
-        let list = List::new(items)
-            .style(Color::White)
-            .highlight_style(Modifier::REVERSED)
-            .highlight_symbol("> ");
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
