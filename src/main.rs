@@ -220,13 +220,22 @@ impl App {
         let final_matches = vec_utils::push_strs(&self.matches);
         let final_non_matches = vec_utils::push_strs(&self.non_matches);
         frame.render_stateful_widget(
-            List::new(final_matches.split_whitespace()).block(Block::bordered()),
+            List::new(final_matches.split_whitespace())
+                .block(Block::bordered())
+                .style(Color::White)
+                .highlight_style(Modifier::REVERSED)
+                .highlight_symbol("> "),
             matching_area,
             list_state,
         );
-        frame.render_widget(
-            Paragraph::new(final_non_matches).block(Block::bordered()),
+        frame.render_stateful_widget(
+            List::new(final_matches.split_whitespace())
+                .block(Block::bordered())
+                .style(Color::White)
+                .highlight_style(Modifier::REVERSED)
+                .highlight_symbol("> "),
             non_matching_area,
+            list_state,
         );
     }
 }
