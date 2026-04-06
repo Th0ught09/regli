@@ -215,10 +215,10 @@ impl App {
             &mut self.non_matches,
             self.items.clone(),
         );
-        let final_matches = vec_utils::push_strs(&self.matches);
-        let final_non_matches = vec_utils::push_strs(&self.non_matches);
+        // let final_matches = vec_utils::push_strs(&self.matches);
+        // let final_non_matches = vec_utils::push_strs(&self.non_matches);
         frame.render_stateful_widget(
-            List::new(final_matches.split_whitespace())
+            List::new(self.matches.clone())
                 .block(Block::bordered())
                 .style(Color::White)
                 .highlight_style(Modifier::REVERSED)
@@ -227,7 +227,7 @@ impl App {
             list_state,
         );
         frame.render_stateful_widget(
-            List::new(final_matches.split_whitespace())
+            List::new(self.non_matches.clone())
                 .block(Block::bordered())
                 .style(Color::White)
                 .highlight_style(Modifier::REVERSED)
