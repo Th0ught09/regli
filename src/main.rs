@@ -108,6 +108,8 @@ impl App {
                     InputMode::Editing => match key.code {
                         KeyCode::Enter => self.get_message(),
                         KeyCode::Esc => self.stop_editing(),
+                        KeyCode::Char('j') => self.on_down(),
+                        KeyCode::Char('k') => self.on_up(),
                         _ => {
                             self.input.handle_event(&event);
                             self.get_message();
@@ -126,6 +128,9 @@ impl App {
     fn stop_editing(&mut self) {
         self.input_mode = InputMode::Normal
     }
+
+    fn on_down(&mut self) {}
+    fn on_up(&mut self) {}
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
