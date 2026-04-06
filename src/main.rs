@@ -102,14 +102,14 @@ impl App {
                 match self.input_mode {
                     InputMode::Normal => match key.code {
                         KeyCode::Char('e') => self.start_editing(),
+                        KeyCode::Char('j') => self.on_down(),
+                        KeyCode::Char('k') => self.on_up(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
                     InputMode::Editing => match key.code {
                         KeyCode::Enter => self.get_message(),
                         KeyCode::Esc => self.stop_editing(),
-                        KeyCode::Char('j') => self.on_down(),
-                        KeyCode::Char('k') => self.on_up(),
                         _ => {
                             self.input.handle_event(&event);
                             self.get_message();
@@ -130,7 +130,10 @@ impl App {
     }
 
     fn on_down(&mut self) {}
-    fn on_up(&mut self) {}
+    fn on_up(&mut self) {
+        println!("test");
+        self.matches.push(String::from("a"));
+    }
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
