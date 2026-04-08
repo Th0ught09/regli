@@ -129,7 +129,10 @@ impl App {
         self.input_mode = InputMode::Normal
     }
 
-    fn on_down(&mut self) {}
+    fn on_down(&mut self) {
+        println!("testdown");
+        self.matches.push(String::from("a"));
+    }
     fn on_up(&mut self) {
         println!("test");
         self.matches.push(String::from("a"));
