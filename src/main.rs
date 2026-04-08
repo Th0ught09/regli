@@ -58,6 +58,10 @@ struct App {
     files: Vec<String>,
     /// the list of items to be matched
     items: Vec<String>,
+    /// current index selected
+    index: i32,
+    /// current tab selected
+    tab: i32,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
@@ -76,6 +80,7 @@ enum SearchMode {
 
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
+        self.index = 0;
         let args = Cli::parse();
         let extensions;
         if args.given_extensions.is_empty() && args.use_extensions {
@@ -130,8 +135,7 @@ impl App {
     }
 
     fn on_down(&mut self) {
-        println!("testdown");
-        self.matches.push(String::from("a"));
+        self.index += 1;
     }
     fn on_up(&mut self) {
         println!("test");
