@@ -148,6 +148,8 @@ impl App {
                 match self.input_mode {
                     InputMode::Normal => match key.code {
                         KeyCode::Char('e') => self.start_editing(),
+                        KeyCode::Char('j') => self.on_down(),
+                        KeyCode::Char('k') => self.on_up(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -173,6 +175,9 @@ impl App {
         self.input_mode = InputMode::Normal
     }
 
+    fn on_down(&mut self) {}
+    fn on_up(&mut self) {}
+
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
         self.matches = StatefulList::with_items(Vec::new());
@@ -196,14 +201,7 @@ impl App {
 
         self.render_help_message(frame, verticals[0]);
         self.render_input(frame, verticals[1]);
-        self.render_messages(frame, matching_areas[0], matching_areas[1]);
-        let items = ["Item 1", "Item 2", "Item 3", "Item 4"];
-        let list = List::new(items)
-            .style(Color::White)
-            .highlight_style(Modifier::REVERSED)
-            .highlight_symbol("> ");
-
-        frame.render_stateful_widget(list, matching_areas[1], list_state);
+        self.render_messages(frame, list_state, matching_areas[0], matching_areas[1]);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
@@ -248,7 +246,13 @@ impl App {
         }
     }
 
-    fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
+    fn render_messages(
+        &mut self,
+        frame: &mut Frame,
+        list_state: &mut ListState,
+        matching_area: Rect,
+        non_matching_area: Rect,
+    ) {
         self.matches.clear();
         self.non_matches.clear();
         matching_utils::update_matches(
@@ -259,13 +263,25 @@ impl App {
         );
         let final_matches = vec_utils::push_strs(&self.matches.items);
         let final_non_matches = vec_utils::push_strs(&self.non_matches.items);
-        frame.render_widget(
-            Paragraph::new(final_matches).block(Block::bordered()),
+        // let final_matches = vec_utils::push_strs(&self.matches);
+        // let final_non_matches = vec_utils::push_strs(&self.non_matches);
+        frame.render_stateful_widget(
+            List::new(self.matches.items.clone())
+                .block(Block::bordered())
+                .style(Color::White)
+                .highlight_style(Modifier::REVERSED)
+                .highlight_symbol("> "),
             matching_area,
+            list_state,
         );
-        frame.render_widget(
-            Paragraph::new(final_non_matches).block(Block::bordered()),
+        frame.render_stateful_widget(
+            List::new(self.non_matches.items.clone())
+                .block(Block::bordered())
+                .style(Color::White)
+                .highlight_style(Modifier::REVERSED)
+                .highlight_symbol("> "),
             non_matching_area,
+            list_state,
         );
     }
 }
