@@ -49,9 +49,9 @@ struct App {
     /// Current input mode
     input_mode: InputMode,
     /// matched strings
-    matches: Vec<String>,
+    matches: StatefulList<String>,
     /// non matched strings
-    non_matches: Vec<String>,
+    non_matches: StatefulList<String>,
     /// user input
     message: String,
     /// files being searched
@@ -60,6 +60,7 @@ struct App {
     items: Vec<String>,
 }
 
+#[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
     pub items: Vec<T>,
@@ -99,6 +100,9 @@ impl<T> StatefulList<T> {
             None => 0,
         };
         self.state.select(Some(i));
+    }
+    pub fn clear(&mut self) {
+        self.items.clear();
     }
 }
 
@@ -171,8 +175,8 @@ impl App {
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
-        self.matches = Vec::new();
-        self.non_matches = Vec::new();
+        self.matches = StatefulList::with_items(Vec::new());
+        self.non_matches = StatefulList::with_items(Vec::new());
     }
 
     fn render(&mut self, frame: &mut Frame, list_state: &mut ListState) {
@@ -249,12 +253,12 @@ impl App {
         self.non_matches.clear();
         matching_utils::update_matches(
             &self.message,
-            &mut self.matches,
-            &mut self.non_matches,
+            &mut self.matches.items,
+            &mut self.non_matches.items,
             self.items.clone(),
         );
-        let final_matches = vec_utils::push_strs(&self.matches);
-        let final_non_matches = vec_utils::push_strs(&self.non_matches);
+        let final_matches = vec_utils::push_strs(&self.matches.items);
+        let final_non_matches = vec_utils::push_strs(&self.non_matches.items);
         frame.render_widget(
             Paragraph::new(final_matches).block(Block::bordered()),
             matching_area,
