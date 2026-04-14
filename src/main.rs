@@ -201,10 +201,14 @@ impl App {
         }
     }
     fn on_left(&mut self) {
-        self.selected = Selected::Matches
+        if self.selected == Selected::Misses {
+            self.selected = Selected::Matches
+        }
     }
     fn on_right(&mut self) {
-        self.selected = Selected::Misses
+        if self.selected == Selected::Matches {
+            self.selected = Selected::Misses
+        }
     }
 
     fn get_message(&mut self) {
