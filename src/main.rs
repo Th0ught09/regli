@@ -186,8 +186,20 @@ impl App {
         self.input_mode = InputMode::Normal
     }
 
-    fn on_down(&mut self) {}
-    fn on_up(&mut self) {}
+    fn on_down(&mut self) {
+        if self.selected == Selected::Matches {
+            self.matches.next();
+        } else {
+            self.non_matches.next();
+        }
+    }
+    fn on_up(&mut self) {
+        if self.selected == Selected::Matches {
+            self.matches.previous();
+        } else {
+            self.non_matches.previous();
+        }
+    }
     fn on_left(&mut self) {
         self.selected = Selected::Matches
     }
