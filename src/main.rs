@@ -120,6 +120,13 @@ enum SearchMode {
     File,
 }
 
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+enum Selected {
+    #[default]
+    Matches,
+    Misses,
+}
+
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
