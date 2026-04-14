@@ -48,6 +48,8 @@ struct App {
     input: Input,
     /// Current input mode
     input_mode: InputMode,
+    /// which object is selected
+    selected: Selected,
     /// matched strings
     matches: StatefulList<String>,
     /// non matched strings
@@ -186,8 +188,12 @@ impl App {
 
     fn on_down(&mut self) {}
     fn on_up(&mut self) {}
-    fn on_left(&mut self) {}
-    fn on_right(&mut self) {}
+    fn on_left(&mut self) {
+        self.selected = Selected::Matches
+    }
+    fn on_right(&mut self) {
+        self.selected = Selected::Misses
+    }
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
