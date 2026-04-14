@@ -261,10 +261,6 @@ impl App {
             &mut self.non_matches.items,
             self.items.clone(),
         );
-        let final_matches = vec_utils::push_strs(&self.matches.items);
-        let final_non_matches = vec_utils::push_strs(&self.non_matches.items);
-        // let final_matches = vec_utils::push_strs(&self.matches);
-        // let final_non_matches = vec_utils::push_strs(&self.non_matches);
         frame.render_stateful_widget(
             List::new(self.matches.items.clone())
                 .block(Block::bordered())
