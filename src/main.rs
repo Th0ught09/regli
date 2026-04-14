@@ -157,6 +157,8 @@ impl App {
                         KeyCode::Char('e') => self.start_editing(),
                         KeyCode::Char('j') => self.on_down(),
                         KeyCode::Char('k') => self.on_up(),
+                        KeyCode::Char('l') => self.on_down(),
+                        KeyCode::Char('h') => self.on_up(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
