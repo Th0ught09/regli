@@ -157,8 +157,8 @@ impl App {
                         KeyCode::Char('e') => self.start_editing(),
                         KeyCode::Char('j') => self.on_down(),
                         KeyCode::Char('k') => self.on_up(),
-                        KeyCode::Char('l') => self.on_down(),
-                        KeyCode::Char('h') => self.on_up(),
+                        KeyCode::Char('l') => self.on_left(),
+                        KeyCode::Char('h') => self.on_right(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -186,6 +186,8 @@ impl App {
 
     fn on_down(&mut self) {}
     fn on_up(&mut self) {}
+    fn on_left(&mut self) {}
+    fn on_right(&mut self) {}
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
