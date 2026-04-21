@@ -1,5 +1,6 @@
 use clap::Parser;
-use log::{info, trace, warn};
+use env_logger::Target;
+use log::{LevelFilter, debug, error, info, trace, warn};
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
@@ -8,6 +9,8 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, List, ListState, Paragraph},
 };
+use simple_logging;
+use std::fs::OpenOptions;
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
@@ -39,6 +42,11 @@ pub struct Cli {
     /// Extensions to parse
     #[arg(short, long)]
     given_extensions: Vec<String>,
+    #[arg(
+        long,
+        help = "Set logging level (debug, info, warn, error). Default is 'warn'"
+    )]
+    log: Option<log::Level>,
 }
 /// App holds the state of the application
 ///
@@ -132,6 +140,26 @@ enum Selected {
 impl App {
     fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
         let args = Cli::parse();
+        let mut builder = env_logger::Builder::new();
+        let log_level = if let Some(level) = args.log {
+            level.to_string()
+        } else {
+            std::env::var("RUST_LOG").unwrap_or(String::from("warn"))
+        };
+        // simple_logging::log_to_file("log/logging.log", LevelFilter.from_str(log_level).unwrap());
+        let file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true) // Remove existing content; set to false to append
+            .open("log/logging.log")
+            .expect("Failed to open log file");
+        let boxed_file = Box::new(file);
+        builder
+            .parse_filters(&log_level)
+            .target(Target::Pipe(boxed_file))
+            .init();
+        error!("error");
+        info!("info");
         let extensions;
         if args.given_extensions.is_empty() && args.use_extensions {
             extensions = const_utils::get_default_extensions();
@@ -189,15 +217,20 @@ impl App {
     fn on_down(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.next();
+            debug!("Next value selected on matches");
+            info!("please write dawg");
         } else {
             self.non_matches.next();
+            debug!("Next value selected on misses");
         }
     }
     fn on_up(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.previous();
+            debug!("Previous value selected on matches");
         } else {
             self.non_matches.previous();
+            debug!("Previous value selected on misses");
         }
     }
     fn on_left(&mut self) {
