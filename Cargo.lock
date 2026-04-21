@@ -1035,6 +1035,7 @@ dependencies = [
  "color-eyre",
  "crossterm 0.29.0",
  "fmt",
+ "log 0.4.29",
  "ratatui",
  "regex 1.12.2",
  "rust-analyzer",
