@@ -1,4 +1,5 @@
 use clap::Parser;
+use log::{info, trace, warn};
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
@@ -10,7 +11,6 @@ use ratatui::{
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
-
 pub mod const_utils;
 pub mod io_util;
 pub mod matching_utils;
