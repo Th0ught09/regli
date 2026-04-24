@@ -158,8 +158,6 @@ impl App {
             .parse_filters(&log_level)
             .target(Target::Pipe(boxed_file))
             .init();
-        error!("error");
-        info!("info");
         let extensions;
         if args.given_extensions.is_empty() && args.use_extensions {
             extensions = const_utils::get_default_extensions();
