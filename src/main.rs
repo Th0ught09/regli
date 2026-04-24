@@ -215,20 +215,19 @@ impl App {
     fn on_down(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.next();
-            debug!("Next value selected on matches");
-            info!("please write dawg");
+            trace!("Selected Next match");
         } else {
             self.non_matches.next();
-            debug!("Next value selected on misses");
+            trace!("Selected next miss");
         }
     }
     fn on_up(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.previous();
-            debug!("Previous value selected on matches");
+            trace!("Previous value selected on matches");
         } else {
             self.non_matches.previous();
-            debug!("Previous value selected on misses");
+            trace!("Previous value selected on misses");
         }
     }
     fn on_left(&mut self) {
