@@ -215,7 +215,7 @@ impl App {
     fn on_down(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.next();
-            trace!("Selected Next match");
+            trace!("Selected next match");
         } else {
             self.non_matches.next();
             trace!("Selected next miss");
@@ -224,10 +224,10 @@ impl App {
     fn on_up(&mut self) {
         if self.selected == Selected::Matches {
             self.matches.previous();
-            trace!("Previous value selected on matches");
+            trace!("Selected prev match");
         } else {
             self.non_matches.previous();
-            trace!("Previous value selected on misses");
+            trace!("selected prev miss");
         }
     }
     fn on_left(&mut self) {
