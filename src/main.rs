@@ -84,7 +84,6 @@ impl<T> StatefulList<T> {
     }
 
     pub fn next(&mut self) {
-        trace!("Selected next object");
         let i = match self.state.selected() {
             Some(i) => {
                 if i >= self.items.len() - 1 {
@@ -95,6 +94,7 @@ impl<T> StatefulList<T> {
             }
             None => 0,
         };
+        trace!("Selected next object: {i}");
         self.state.select(Some(i));
     }
 
@@ -109,6 +109,7 @@ impl<T> StatefulList<T> {
             }
             None => 0,
         };
+        trace!("Selected prev object: {i}");
         self.state.select(Some(i));
     }
     pub fn clear(&mut self) {
