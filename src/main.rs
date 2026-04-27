@@ -147,7 +147,6 @@ impl App {
         } else {
             std::env::var("RUST_LOG").unwrap_or(String::from("warn"))
         };
-        // simple_logging::log_to_file("log/logging.log", LevelFilter.from_str(log_level).unwrap());
         let file = OpenOptions::new()
             .create(true)
             .write(true)
