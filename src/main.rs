@@ -196,11 +196,11 @@ impl App {
                         _ => {
                             self.input.handle_event(&event);
                             self.get_message();
-                            terminal.draw(|frame| self.render(frame, &mut list_state))?;
                         }
                     },
                 }
             }
+            terminal.draw(|frame| self.render(frame, &mut list_state))?;
         }
     }
 
