@@ -9,7 +9,6 @@ use ratatui::{
     text::{Line, ToSpan},
     widgets::{Block, List, ListState, Paragraph},
 };
-use simple_logging;
 use std::fs::OpenOptions;
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
