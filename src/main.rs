@@ -159,6 +159,7 @@ impl App {
             .target(Target::Pipe(boxed_file))
             .init();
         let extensions;
+        let path;
         if args.given_extensions.is_empty() && args.use_extensions {
             extensions = const_utils::get_default_extensions();
         } else {
@@ -167,11 +168,11 @@ impl App {
         self.files = args.files;
         if self.files.is_empty() {
             if args.dir.is_empty() {
-                self.items =
-                    shell_utils::start_shell_search(env::current_dir().unwrap(), extensions);
+                path = env::current_dir().unwrap();
             } else {
-                self.items = shell_utils::start_shell_search(PathBuf::from(args.dir), extensions);
+                path = PathBuf::from(args.dir);
             }
+            self.items = shell_utils::start_shell_search(path, extensions);
         } else {
             self.items = io_util::read_file(&self.files)
         }
@@ -318,6 +319,12 @@ impl App {
     ) {
         self.matches.clear();
         self.non_matches.clear();
+        matching_utils::update_matches(
+            &self.message,
+            &mut self.matches.items,
+            &mut self.non_matches.items,
+            self.items.clone(),
+        );
         frame.render_stateful_widget(
             List::new(self.matches.items.clone())
                 .block(Block::bordered())
