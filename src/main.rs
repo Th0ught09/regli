@@ -176,8 +176,7 @@ impl App {
         } else {
             self.items = io_util::read_file(&self.files)
         }
-        let mut list_state = ListState::default().with_selected(Some(0));
-        terminal.draw(|frame| self.render(frame, &mut list_state))?;
+        terminal.draw(|frame| self.render(frame))?;
         loop {
             let event = event::read()?;
             if let Event::Key(key) = event {
@@ -200,7 +199,7 @@ impl App {
                         }
                     },
                 }
-                terminal.draw(|frame| self.render(frame, &mut list_state))?;
+                terminal.draw(|frame| self.render(frame))?;
             }
         }
     }
@@ -248,7 +247,7 @@ impl App {
         self.non_matches = StatefulList::with_items(Vec::new());
     }
 
-    fn render(&mut self, frame: &mut Frame, list_state: &mut ListState) {
+    fn render(&mut self, frame: &mut Frame) {
         let verticals = Layout::default()
             .direction(Direction::Vertical)
             .constraints(vec![
@@ -265,7 +264,7 @@ impl App {
 
         self.render_help_message(frame, verticals[0]);
         self.render_input(frame, verticals[1]);
-        self.render_messages(frame, list_state, matching_areas[0], matching_areas[1]);
+        self.render_messages(frame, matching_areas[0], matching_areas[1]);
     }
 
     fn render_help_message(&self, frame: &mut Frame, area: Rect) {
@@ -310,13 +309,7 @@ impl App {
         }
     }
 
-    fn render_messages(
-        &mut self,
-        frame: &mut Frame,
-        list_state: &mut ListState,
-        matching_area: Rect,
-        non_matching_area: Rect,
-    ) {
+    fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
         self.matches.clear();
         self.non_matches.clear();
         matching_utils::update_matches(
