@@ -6,8 +6,8 @@ use ratatui::{
     crossterm::event::{self, Event, KeyCode},
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style, Stylize},
-    text::{Line, ToSpan},
-    widgets::{Block, List, ListState, Paragraph},
+    text::{self, Line, Span, ToSpan},
+    widgets::{Block, List, ListItem, ListState, Paragraph},
 };
 use std::fs::OpenOptions;
 use std::{env, io, path::PathBuf};
@@ -325,23 +325,16 @@ impl App {
             &mut self.non_matches.items,
             self.items.clone(),
         );
-        frame.render_stateful_widget(
-            List::new(self.matches.items.clone())
-                .block(Block::bordered())
-                .style(Color::White)
-                .highlight_style(Modifier::REVERSED)
-                .highlight_symbol("> "),
-            matching_area,
-            list_state,
-        );
-        frame.render_stateful_widget(
-            List::new(self.non_matches.items.clone())
-                .block(Block::bordered())
-                .style(Color::White)
-                .highlight_style(Modifier::REVERSED)
-                .highlight_symbol("> "),
-            non_matching_area,
-            list_state,
-        );
+        let matches: Vec<ListItem> = self
+            .matches
+            .items
+            .iter()
+            .map(|i| ListItem::new(vec![text::Line::from(Span::raw(i))]))
+            .collect();
+        let matches = List::new(matches)
+            .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+            .highlight_symbol("> ");
+
+        frame.render_stateful_widget(matches, matching_area, &mut self.matches.state);
     }
 }
