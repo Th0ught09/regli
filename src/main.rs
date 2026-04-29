@@ -199,8 +199,8 @@ impl App {
                         }
                     },
                 }
+                terminal.draw(|frame| self.render(frame, &mut list_state))?;
             }
-            terminal.draw(|frame| self.render(frame, &mut list_state))?;
         }
     }
 
@@ -227,7 +227,7 @@ impl App {
             trace!("Selected prev match");
         } else {
             self.non_matches.previous();
-            trace!("selected prev miss");
+            trace!("Selected prev miss");
         }
     }
     fn on_left(&mut self) {
@@ -318,12 +318,6 @@ impl App {
     ) {
         self.matches.clear();
         self.non_matches.clear();
-        matching_utils::update_matches(
-            &self.message,
-            &mut self.matches.items,
-            &mut self.non_matches.items,
-            self.items.clone(),
-        );
         frame.render_stateful_widget(
             List::new(self.matches.items.clone())
                 .block(Block::bordered())
