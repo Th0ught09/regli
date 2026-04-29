@@ -60,7 +60,7 @@ struct App {
     /// matched strings
     matches: StatefulList<String>,
     /// non matched strings
-    non_matches: StatefulList<String>,
+    misses: StatefulList<String>,
     /// user input
     message: String,
     /// files being searched
@@ -92,9 +92,13 @@ impl<T> StatefulList<T> {
                     i + 1
                 }
             }
-            None => 0,
+            _ => {
+                trace!("Failed selecting next");
+                0
+            }
         };
         trace!("Selected next object: {i}");
+        trace!("Total items: {}", self.items.len());
         self.state.select(Some(i));
     }
 
@@ -107,7 +111,7 @@ impl<T> StatefulList<T> {
                     i - 1
                 }
             }
-            None => 0,
+            _ => 0,
         };
         trace!("Selected prev object: {i}");
         self.state.select(Some(i));
@@ -185,8 +189,8 @@ impl App {
                         KeyCode::Char('e') => self.start_editing(),
                         KeyCode::Char('j') => self.on_down(),
                         KeyCode::Char('k') => self.on_up(),
-                        KeyCode::Char('l') => self.on_left(),
-                        KeyCode::Char('h') => self.on_right(),
+                        KeyCode::Char('h') => self.on_left(),
+                        KeyCode::Char('l') => self.on_right(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -217,7 +221,7 @@ impl App {
             self.matches.next();
             trace!("Selected next match");
         } else {
-            self.non_matches.next();
+            self.misses.next();
             trace!("Selected next miss");
         }
     }
@@ -226,17 +230,19 @@ impl App {
             self.matches.previous();
             trace!("Selected prev match");
         } else {
-            self.non_matches.previous();
+            self.misses.previous();
             trace!("Selected prev miss");
         }
     }
     fn on_left(&mut self) {
         if self.selected == Selected::Misses {
+            trace!("selected matches");
             self.selected = Selected::Matches
         }
     }
     fn on_right(&mut self) {
         if self.selected == Selected::Matches {
+            trace!("selected misses");
             self.selected = Selected::Misses
         }
     }
@@ -244,7 +250,7 @@ impl App {
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
         self.matches = StatefulList::with_items(Vec::new());
-        self.non_matches = StatefulList::with_items(Vec::new());
+        self.misses = StatefulList::with_items(Vec::new());
     }
 
     fn render(&mut self, frame: &mut Frame) {
@@ -309,25 +315,25 @@ impl App {
         }
     }
 
-    fn render_messages(&mut self, frame: &mut Frame, matching_area: Rect, non_matching_area: Rect) {
+    fn render_messages(&mut self, frame: &mut Frame, matches_area: Rect, misses_area: Rect) {
         self.matches.clear();
-        self.non_matches.clear();
+        self.misses.clear();
         matching_utils::update_matches(
             &self.message,
             &mut self.matches.items,
-            &mut self.non_matches.items,
+            &mut self.misses.items,
             self.items.clone(),
         );
-        let matches: Vec<ListItem> = self
-            .matches
-            .items
-            .iter()
-            .map(|i| ListItem::new(vec![text::Line::from(Span::raw(i))]))
-            .collect();
-        let matches = List::new(matches)
+        let matches = List::new(self.matches.items.clone())
+            .block(Block::bordered())
+            .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+            .highlight_symbol("> ");
+        let misses = List::new(self.misses.items.clone())
+            .block(Block::bordered())
             .highlight_style(Style::default().add_modifier(Modifier::BOLD))
             .highlight_symbol("> ");
 
-        frame.render_stateful_widget(matches, matching_area, &mut self.matches.state);
+        frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
+        frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);
     }
 }
