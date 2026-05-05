@@ -180,8 +180,8 @@ impl App {
         } else {
             self.items = io_util::read_file(&self.files)
         }
-        terminal.draw(|frame| self.render(frame))?;
         loop {
+            terminal.draw(|frame| self.render(frame))?;
             let event = event::read()?;
             if let Event::Key(key) = event {
                 match self.input_mode {
@@ -191,6 +191,7 @@ impl App {
                         KeyCode::Char('k') => self.on_up(),
                         KeyCode::Char('h') => self.on_left(),
                         KeyCode::Char('l') => self.on_right(),
+                        KeyCode::Enter => self.select_current(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -203,7 +204,6 @@ impl App {
                         }
                     },
                 }
-                terminal.draw(|frame| self.render(frame))?;
             }
         }
     }
@@ -244,6 +244,12 @@ impl App {
         if self.selected == Selected::Matches {
             trace!("selected misses");
             self.selected = Selected::Misses
+        }
+    }
+
+    fn select_current(&mut self) {
+        if let Some(i) = self.matches.state.selected() {
+            trace!("{}", self.matches.items[i])
         }
     }
 
