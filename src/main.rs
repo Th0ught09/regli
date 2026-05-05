@@ -55,6 +55,8 @@ struct App {
     input: Input,
     /// Current input mode
     input_mode: InputMode,
+    /// What search mode we're in
+    search_mode: SearchMode,
     /// which object is selected
     selected: Selected,
     /// matched strings
@@ -249,7 +251,8 @@ impl App {
 
     fn select_current(&mut self) {
         if let Some(i) = self.matches.state.selected() {
-            trace!("{}", self.matches.items[i])
+            trace!("{}", self.matches.items[i]);
+            if self.search_mode == SearchMode::Shell {}
         }
     }
 
