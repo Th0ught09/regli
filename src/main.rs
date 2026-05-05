@@ -69,6 +69,8 @@ struct App {
     files: Vec<String>,
     /// the list of items to be matched
     items: Vec<String>,
+    /// current extensions used
+    extensions: Vec<String>,
 }
 
 #[derive(Debug, Default)]
@@ -164,12 +166,11 @@ impl App {
             .parse_filters(&log_level)
             .target(Target::Pipe(boxed_file))
             .init();
-        let extensions;
         let path;
         if args.given_extensions.is_empty() && args.use_extensions {
-            extensions = const_utils::get_default_extensions();
+            self.extensions = const_utils::get_default_extensions();
         } else {
-            extensions = args.given_extensions;
+            self.extensions = args.given_extensions;
         }
         self.files = args.files;
         if self.files.is_empty() {
@@ -178,7 +179,7 @@ impl App {
             } else {
                 path = PathBuf::from(args.dir);
             }
-            self.items = shell_utils::start_shell_search(path, extensions);
+            self.items = shell_utils::start_shell_search(path, self.extensions.clone());
         } else {
             self.items = io_util::read_file(&self.files)
         }
@@ -252,7 +253,12 @@ impl App {
     fn select_current(&mut self) {
         if let Some(i) = self.matches.state.selected() {
             trace!("{}", self.matches.items[i]);
-            if self.search_mode == SearchMode::Shell {}
+            if self.search_mode == SearchMode::Shell {
+                self.items = shell_utils::start_shell_search(
+                    PathBuf::from(&self.matches.items[i]),
+                    self.extensions.clone(),
+                )
+            }
         }
     }
 
