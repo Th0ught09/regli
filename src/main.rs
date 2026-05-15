@@ -252,12 +252,15 @@ impl App {
 
     fn select_current(&mut self) {
         if let Some(i) = self.matches.state.selected() {
-            trace!("{}", self.matches.items[i]);
-            if self.search_mode == SearchMode::Shell {
-                self.items = shell_utils::start_shell_search(
-                    PathBuf::from(&self.matches.items[i]),
-                    self.extensions.clone(),
-                )
+            if shell_utils::is_path_dir(self.matches.items[i].clone()) {
+                if self.search_mode == SearchMode::Shell {
+                    self.items = shell_utils::start_shell_search(
+                        PathBuf::from(&self.matches.items[i]),
+                        self.extensions.clone(),
+                    )
+                }
+            } else {
+                trace!("File found");
             }
         }
     }
