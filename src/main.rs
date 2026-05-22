@@ -260,6 +260,8 @@ impl App {
                     )
                 }
             } else {
+                let files = self.matches.items[i].clone();
+                self.items = io_util::read_file(&vec![files]);
                 trace!("File found");
             }
         }
