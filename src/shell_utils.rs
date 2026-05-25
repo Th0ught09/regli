@@ -43,19 +43,18 @@ pub fn is_path_dir(path: String) -> bool {
 mod tests {
     use super::*;
     #[test]
-    #[ignore]
     fn test_gets_dir_file() {
         assert_eq!(
             get_dir_files(
                 fs::read_dir(PathBuf::from("./src/tests/resources")).unwrap(),
-                vec![String::from("")]
+                Vec::new()
             ),
             vec![
-                String::from("lines.txt"),
-                String::from("test.txt"),
-                String::from("test_mult.txt"),
-                String::from("test_dir"),
-                String::from("unused.exe"),
+                String::from("./src/tests/resources/test_dir"),
+                String::from("./src/tests/resources/test_mult.txt"),
+                String::from("./src/tests/resources/lines.txt"),
+                String::from("./src/tests/resources/unused.exe"),
+                String::from("./src/tests/resources/test.txt"),
             ],
         )
     }
