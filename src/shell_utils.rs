@@ -20,8 +20,12 @@ pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> Vec<S
 }
 
 pub fn has_correct_extension(path: &Path, valid_extensions: &[String]) -> bool {
-    if !(valid_extensions.is_empty()) {
-        valid_extensions.contains(&path.extension().unwrap().to_str().unwrap().to_string())
+    if let Some(extension) = path.extension() {
+        if !(valid_extensions.is_empty()) {
+            valid_extensions.contains(&extension.to_str().unwrap().to_string())
+        } else {
+            true
+        }
     } else {
         true
     }
@@ -50,6 +54,8 @@ mod tests {
                 String::from("lines.txt"),
                 String::from("test.txt"),
                 String::from("test_mult.txt"),
+                String::from("test_dir"),
+                String::from("unused.exe"),
             ],
         )
     }
@@ -58,7 +64,7 @@ mod tests {
         assert!(
             !(has_correct_extension(
                 &PathBuf::from("./src/tests/shell_resources/executable.exe"),
-                &[String::from("")]
+                &[String::from("txt")]
             ))
         )
     }

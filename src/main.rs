@@ -36,11 +36,12 @@ pub struct Cli {
     #[arg(short, long)]
     dir: String,
     /// Whether to use extension filtering
-    #[arg(short, long)]
+    #[arg(short, long, default_value_t = true)]
     use_extensions: bool,
     /// Extensions to parse
     #[arg(short, long)]
     given_extensions: Vec<String>,
+    /// Set the logging level
     #[arg(
         long,
         help = "Set logging level (debug, info, warn, error). Default is 'warn'"
@@ -167,11 +168,17 @@ impl App {
             .target(Target::Pipe(boxed_file))
             .init();
         let path;
-        if args.given_extensions.is_empty() && args.use_extensions {
-            self.extensions = const_utils::get_default_extensions();
-        } else {
-            self.extensions = args.given_extensions;
+        if args.use_extensions {
+            if args.given_extensions.is_empty() {
+                self.extensions = const_utils::get_default_extensions();
+            } else {
+                self.extensions = args.given_extensions;
+            }
         }
+        for arg in &self.extensions {
+            trace!("{}", arg);
+        }
+
         self.files = args.files;
         if self.files.is_empty() {
             if args.dir.is_empty() {
