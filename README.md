@@ -25,7 +25,7 @@ cargo build
 
 Test using
 
-## Development
+## Testing
 
 ```bash
 cargo test
@@ -39,3 +39,7 @@ The following cli options are available
 | `-u` | Filter files in shell mode based on extension |
 | `-g` | Pass in extensions to filter by |
 | `-d` | Which directory to start in for shell mode |
+
+## Contributing
+
+Contributions are welcome, ensure that you run the [tests](Tests) prior to opening a pull request to ensure nothing has broken.
