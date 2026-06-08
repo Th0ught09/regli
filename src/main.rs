@@ -80,6 +80,15 @@ pub struct ProcessedLine<T> {
     selected: bool,
 }
 
+impl<T> ProcessedLine<T> {
+    pub fn selected(&mut self) {
+        self.selected = true;
+    }
+    pub fn unselected(&mut self) {
+        self.selected = false;
+    }
+}
+
 #[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
