@@ -75,6 +75,12 @@ struct App {
 }
 
 #[derive(Debug, Default)]
+pub struct ProcessedLine<T> {
+    item: T,
+    selected: bool,
+}
+
+#[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
     pub items: Vec<T>,
