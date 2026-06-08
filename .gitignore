@@ -10,3 +10,4 @@ tags
 **/*.rs.bk
 *.log
 *.org
+*.org_archive
