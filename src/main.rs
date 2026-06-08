@@ -87,6 +87,12 @@ impl<T> ProcessedLine<T> {
     pub fn unselected(&mut self) {
         self.selected = false;
     }
+    // pub fn get_item(&mut self) -> T {
+    //     self.item.clone()
+    // }
+    pub fn set_item(&mut self, item: T) {
+        self.item = item;
+    }
 }
 
 #[derive(Debug, Default)]
