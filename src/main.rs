@@ -80,16 +80,16 @@ pub struct ProcessedLine<T> {
     selected: bool,
 }
 
-impl<T> ProcessedLine<T> {
+impl<T: Clone> ProcessedLine<T> {
     pub fn selected(&mut self) {
         self.selected = true;
     }
     pub fn unselected(&mut self) {
         self.selected = false;
     }
-    // pub fn get_item(&mut self) -> T {
-    //     self.item.clone()
-    // }
+    pub fn get_item(&mut self) -> T {
+        self.item.clone()
+    }
     pub fn set_item(&mut self, item: T) {
         self.item = item;
     }
