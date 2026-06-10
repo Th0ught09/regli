@@ -69,7 +69,7 @@ struct App {
     /// files being searched
     files: Vec<String>,
     /// the list of items to be matched
-    items: Vec<String>,
+    items: Vec<ProcessedLine<String>>,
     /// current extensions used
     extensions: Vec<String>,
 }
@@ -81,6 +81,12 @@ pub struct ProcessedLine<T> {
 }
 
 impl<T: Clone> ProcessedLine<T> {
+    pub fn with_item(item: T) -> Self {
+        Self {
+            item,
+            selected: false,
+        }
+    }
     pub fn selected(&mut self) {
         self.selected = true;
     }
@@ -207,9 +213,16 @@ impl App {
             } else {
                 path = PathBuf::from(args.dir);
             }
-            self.items = shell_utils::start_shell_search(path, self.extensions.clone());
+            self.items = shell_utils::start_shell_search(path, self.extensions.clone())
+                .clone()
+                .iter()
+                .map(|string| ProcessedLine::with_item(string.clone()))
+                .collect();
         } else {
             self.items = io_util::read_file(&self.files)
+                .iter()
+                .map(|string| ProcessedLine::with_item(string.clone()))
+                .collect();
         }
         loop {
             terminal.draw(|frame| self.render(frame))?;
@@ -286,10 +299,17 @@ impl App {
                         PathBuf::from(&self.matches.items[i]),
                         self.extensions.clone(),
                     )
+                    .clone()
+                    .iter()
+                    .map(|string| ProcessedLine::with_item(string.clone()))
+                    .collect();
                 }
             } else {
                 let files = self.matches.items[i].clone();
-                self.items = io_util::read_file(&vec![files]);
+                self.items = io_util::read_file(&vec![files])
+                    .iter()
+                    .map(|string| ProcessedLine::with_item(string.clone()))
+                    .collect();
                 trace!("File found");
             }
         }
@@ -370,7 +390,10 @@ impl App {
             &self.message,
             &mut self.matches.items,
             &mut self.misses.items,
-            self.items.clone(),
+            self.items
+                .iter()
+                .map(|processed_line| processed_line.item.clone())
+                .collect(),
         );
         let matches = List::new(self.matches.items.clone())
             .block(Block::bordered())
