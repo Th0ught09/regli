@@ -35,7 +35,7 @@ pub fn is_path_file(path: String) -> bool {
     Path::new(path.as_str()).is_file()
 }
 
-pub fn is_path_dir(path: String) -> bool {
+pub fn is_path_dir(path: &String) -> bool {
     Path::new(path.as_str()).is_dir()
 }
 

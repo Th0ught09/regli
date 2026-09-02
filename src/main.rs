@@ -9,6 +9,7 @@ use ratatui::{
     text::{self, Line, Span, ToSpan},
     widgets::{Block, List, ListItem, ListState, Paragraph},
 };
+use regex::Regex;
 use std::fs::OpenOptions;
 use std::{env, io, path::PathBuf};
 use tui_input::Input;
@@ -61,9 +62,9 @@ struct App {
     /// which object is selected
     selected: Selected,
     /// matched strings
-    matches: StatefulList<String>,
+    matches: StatefulList<ProcessedLine<String>>,
     /// non matched strings
-    misses: StatefulList<String>,
+    misses: StatefulList<ProcessedLine<String>>,
     /// user input
     message: String,
     /// files being searched
@@ -74,10 +75,11 @@ struct App {
     extensions: Vec<String>,
 }
 
-#[derive(Debug, Default)]
+#[derive(Debug, Default, Clone)]
 pub struct ProcessedLine<T> {
     item: T,
     selected: bool,
+    is_match: bool,
 }
 
 impl<T: Clone> ProcessedLine<T> {
@@ -85,6 +87,7 @@ impl<T: Clone> ProcessedLine<T> {
         Self {
             item,
             selected: false,
+            is_match: false,
         }
     }
     pub fn selected(&mut self) {
@@ -93,11 +96,20 @@ impl<T: Clone> ProcessedLine<T> {
     pub fn unselected(&mut self) {
         self.selected = false;
     }
-    pub fn get_item(&mut self) -> T {
-        self.item.clone()
+    pub fn matches(&mut self) {
+        self.is_match = true;
+    }
+    pub fn missed(&mut self) {
+        self.is_match = false;
+    }
+    pub fn has_matched(&self) -> bool {
+        self.is_match
     }
     pub fn set_item(&mut self, item: T) {
         self.item = item;
+    }
+    pub fn get_item(&self) -> T {
+        self.item.clone()
     }
 }
 
@@ -293,10 +305,10 @@ impl App {
 
     fn select_current(&mut self) {
         if let Some(i) = self.matches.state.selected() {
-            if shell_utils::is_path_dir(self.matches.items[i].clone()) {
+            if shell_utils::is_path_dir(&self.matches.items[i].item) {
                 if self.search_mode == SearchMode::Shell {
                     self.items = shell_utils::start_shell_search(
-                        PathBuf::from(&self.matches.items[i]),
+                        PathBuf::from(&self.matches.items[i].item),
                         self.extensions.clone(),
                     )
                     .clone()
@@ -305,8 +317,8 @@ impl App {
                     .collect();
                 }
             } else {
-                let files = self.matches.items[i].clone();
-                self.items = io_util::read_file(&vec![files])
+                let files = self.matches.items[i].item.clone();
+                self.items = io_util::read_file(&[files])
                     .iter()
                     .map(|string| ProcessedLine::with_item(string.clone()))
                     .collect();
@@ -386,23 +398,41 @@ impl App {
     fn render_messages(&mut self, frame: &mut Frame, matches_area: Rect, misses_area: Rect) {
         self.matches.clear();
         self.misses.clear();
-        matching_utils::update_matches(
-            &self.message,
-            &mut self.matches.items,
-            &mut self.misses.items,
+        // matching_utils::update_matches(
+        //     &self.message,
+        //     &mut self.matches.items,
+        //     &mut self.misses.items,
+        //     &self.items,
+        // );
+
+        let re = Regex::new(&self.message).unwrap();
+        for mut message in self.items.clone() {
+            if re.is_match(message.item.as_str()) {
+                message.matches();
+            } else {
+                message.missed();
+            }
+        }
+        let matches = List::new(
             self.items
                 .iter()
-                .map(|processed_line| processed_line.item.clone())
-                .collect(),
-        );
-        let matches = List::new(self.matches.items.clone())
-            .block(Block::bordered())
-            .highlight_style(Style::default().add_modifier(Modifier::BOLD))
-            .highlight_symbol("> ");
-        let misses = List::new(self.misses.items.clone())
-            .block(Block::bordered())
-            .highlight_style(Style::default().add_modifier(Modifier::BOLD))
-            .highlight_symbol("> ");
+                .filter(|&item| item.has_matched())
+                .map(|item| item.get_item())
+                .collect::<Vec<_>>(),
+        )
+        .block(Block::bordered())
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_symbol("> ");
+        let misses = List::new(
+            self.misses
+                .items
+                .iter()
+                .map(|item| item.item.clone())
+                .collect::<Vec<_>>(),
+        )
+        .block(Block::bordered())
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_symbol("> ");
 
         frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
         frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);

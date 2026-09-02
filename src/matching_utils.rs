@@ -1,20 +1,21 @@
+use crate::ProcessedLine;
 use regex::Regex;
 
-pub fn update_matches(
-    message: &str,
-    matches: &mut Vec<String>,
-    non_matches: &mut Vec<String>,
-    messages: Vec<String>,
-) {
-    let re = Regex::new(message).unwrap();
-    for message in messages {
-        if re.is_match(message.as_str()) {
-            matches.push(message.clone())
-        } else {
-            non_matches.push(message.clone())
-        }
-    }
-}
+// pub fn update_matches(
+//     message: &str,
+//     matches: &mut Vec<ProcessedLine<String>>,
+//     non_matches: &mut Vec<ProcessedLine<String>>,
+//     messages: &Vec<ProcessedLine<String>>,
+// ) {
+//     let re = Regex::new(message).unwrap();
+//     for message in messages {
+//         if re.is_match(message.item.as_str()) {
+//             message.matches()
+//         } else {
+//             message.missed()
+//         }
+//     }
+// }
 
 #[allow(dead_code)]
 fn test_matches() -> (Vec<String>, Vec<String>) {
@@ -22,7 +23,7 @@ fn test_matches() -> (Vec<String>, Vec<String>) {
     let mut matches: Vec<String> = Vec::new();
     let mut non_matches: Vec<String> = Vec::new();
     let messages = vec![String::from("hi"), String::from("gq")];
-    update_matches(&message, &mut matches, &mut non_matches, messages);
+    // update_matches(&message, &mut matches, &mut non_matches, messages);
     (matches, non_matches)
 }
 
