@@ -41,7 +41,7 @@ pub struct Cli {
     /// files to be inputted
     files: Vec<String>,
     /// Directory to search
-    #[arg(short, long)]
+    #[arg(short, long, default_value_t = String::from("."))]
     dir: String,
     /// Whether to use extension filtering
     #[arg(short, long, default_value_t = true)]
