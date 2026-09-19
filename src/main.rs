@@ -1,13 +1,13 @@
 use clap::Parser;
 use env_logger::Target;
-use log::{LevelFilter, debug, error, info, trace, warn};
+use log::trace;
 use ratatui::{
     DefaultTerminal, Frame,
     crossterm::event::{self, Event, KeyCode},
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style, Stylize},
-    text::{self, Line, Span, ToSpan},
-    widgets::{Block, List, ListItem, ListState, Paragraph},
+    text::{Line, ToSpan},
+    widgets::{Block, List, ListState, Paragraph},
 };
 use regex::Regex;
 use std::fs::OpenOptions;
@@ -176,7 +176,6 @@ enum InputMode {
 enum SearchMode {
     #[default]
     Shell,
-    File,
 }
 
 #[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]

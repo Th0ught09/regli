@@ -9,7 +9,7 @@ color-eyre = "0.6.5"
 crossterm = "0.29.0"
 tui-input = "*"
 regex = "1.11.2"
-clap = { version = "4.5.48", features = ["derive"] }
+clap = { version = "4.5.48", features = ["derive", "wrap_help"] }
 log = "0.4.29"
 simple-logging = "2.0.2"
 env_logger = "0.11.10"
