@@ -22,14 +22,21 @@ pub mod shell_utils;
 pub mod vec_utils;
 
 fn main() -> io::Result<()> {
+    let args = Cli::parse();
     let mut terminal = ratatui::init();
-    let result = App::default().run(&mut terminal);
+    let result = App::default().run(&mut terminal, args);
     ratatui::restore();
     result
 }
 
 #[derive(Parser, Debug)]
-#[command(version, about, long_about = None)]
+#[command(
+    version, 
+    about = "Directory search tool with regex matching",
+    long_about = None,
+    // Force consistent terminal width for help output
+    term_width = 80
+)]
 pub struct Cli {
     /// files to be inputted
     files: Vec<String>,
@@ -186,8 +193,7 @@ enum Selected {
 }
 
 impl App {
-    fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        let args = Cli::parse();
+    fn run(mut self, terminal: &mut DefaultTerminal, args: Cli) -> io::Result<()> {
         let mut builder = env_logger::Builder::new();
         let log_level = if let Some(level) = args.log {
             level.to_string()
