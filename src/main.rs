@@ -225,11 +225,7 @@ impl App {
 
         self.files = args.files;
         if self.files.is_empty() {
-            if args.dir.is_empty() {
-                path = env::current_dir().unwrap();
-            } else {
-                path = PathBuf::from(args.dir);
-            }
+            path = PathBuf::from(args.dir);
             self.items = shell_utils::start_shell_search(path, self.extensions.clone())
                 .clone()
                 .iter()
