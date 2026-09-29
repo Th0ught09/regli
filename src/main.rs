@@ -203,7 +203,7 @@ impl App {
         let file = OpenOptions::new()
             .create(true)
             .write(true)
-            .truncate(true) // Remove existing content; set to false to append
+            .truncate(true)
             .open("log/logging.log")
             .expect("Failed to open log file");
         let boxed_file = Box::new(file);
