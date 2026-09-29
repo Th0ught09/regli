@@ -1,4 +1,5 @@
 use clap::Parser;
+use std::collections::HashMap;
 use env_logger::Target;
 use log::trace;
 use ratatui::{
@@ -123,11 +124,11 @@ impl<T: Clone> ProcessedLine<T> {
 #[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
-    pub items: Vec<T>,
+    pub items: HashMap<i64, T>,
 }
 
 impl<T> StatefulList<T> {
-    pub fn with_items(items: Vec<T>) -> Self {
+    pub fn with_items(items: HashMap<i64, T>) -> Self {
         Self {
             state: ListState::default(),
             items,
@@ -248,7 +249,7 @@ impl App {
                         KeyCode::Char('k') => self.on_up(),
                         KeyCode::Char('h') => self.on_left(),
                         KeyCode::Char('l') => self.on_right(),
-                        KeyCode::Enter => self.select_current(),
+                        // KeyCode::Enter => self.select_current(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -304,34 +305,34 @@ impl App {
         }
     }
 
-    fn select_current(&mut self) {
-        if let Some(i) = self.matches.state.selected() {
-            if shell_utils::is_path_dir(&self.matches.items[i].item) {
-                if self.search_mode == SearchMode::Shell {
-                    self.items = shell_utils::start_shell_search(
-                        PathBuf::from(&self.matches.items[i].item),
-                        self.extensions.clone(),
-                    )
-                    .clone()
-                    .iter()
-                    .map(|string| ProcessedLine::with_item(string.clone()))
-                    .collect();
-                }
-            } else {
-                let files = self.matches.items[i].item.clone();
-                self.items = io_util::read_file(&[files])
-                    .iter()
-                    .map(|string| ProcessedLine::with_item(string.clone()))
-                    .collect();
-                trace!("File found");
-            }
-        }
-    }
+    // fn select_current(&mut self) { // Cooked rn, fix other stuff
+    //     if let Some(i) = self.matches.state.selected() {
+    //         if shell_utils::is_path_dir(&self.matches.items[i].item) {
+    //             if self.search_mode == SearchMode::Shell {
+    //                 self.items = shell_utils::start_shell_search(
+    //                     PathBuf::from(&self.matches.items[i].item),
+    //                     self.extensions.clone(),
+    //                 )
+    //                 .clone()
+    //                 .iter()
+    //                 .map(|string| ProcessedLine::with_item(string.clone()))
+    //                 .collect();
+    //             }
+    //         } else {
+    //             let files = self.matches.items[i].item.clone();
+    //             self.items = io_util::read_file(&[files])
+    //                 .iter()
+    //                 .map(|string| ProcessedLine::with_item(string.clone()))
+    //                 .collect();
+    //             trace!("File found");
+    //         }
+    //     }
+    // }
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
-        self.matches = StatefulList::with_items(Vec::new());
-        self.misses = StatefulList::with_items(Vec::new());
+        self.matches = StatefulList::with_items(HashMap::new());
+        self.misses = StatefulList::with_items(HashMap::new());
     }
 
     fn render(&mut self, frame: &mut Frame) {
@@ -424,18 +425,18 @@ impl App {
         .block(Block::bordered())
         .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("> ");
-        let misses = List::new(
-            self.misses
-                .items
-                .iter()
-                .map(|item| item.item.clone())
-                .collect::<Vec<_>>(),
-        )
-        .block(Block::bordered())
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
-        .highlight_symbol("> ");
+        // let misses = List::new(
+        //     self.misses
+        //         .items
+        //         .iter()
+        //         .map(|item| item.item.clone())
+        //         .collect::<Vec<_>>(),
+        // )
+        // .block(Block::bordered())
+        // .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        // .highlight_symbol("> ");
 
-        frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
-        frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);
+        // frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
+        // frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);
     }
 }
