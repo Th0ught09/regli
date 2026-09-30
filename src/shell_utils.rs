@@ -1,19 +1,20 @@
+use std::collections::HashSet;
 use std::{
     fs,
     path::{Path, PathBuf},
 };
 
-pub fn start_shell_search(dir: PathBuf, valid_extensions: Vec<String>) -> Vec<String> {
+pub fn start_shell_search(dir: PathBuf, valid_extensions: Vec<String>) -> HashSet<String> {
     let paths = fs::read_dir(dir).unwrap();
     get_dir_files(paths, valid_extensions)
 }
 
-pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> Vec<String> {
-    let mut files = Vec::new();
+pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> HashSet<String> {
+    let mut files = HashSet::new();
     for path in paths {
         let path = path.unwrap().path();
         if has_correct_extension(&path, &valid_extensions) {
-            files.push(path.display().to_string());
+            files.insert(path.display().to_string());
         }
     }
     files
@@ -44,18 +45,18 @@ mod tests {
     use super::*;
     #[test]
     fn test_gets_dir_file() {
+        let mut test_set = HashSet::new();
+        test_set.insert(String::from("./src/tests/resources/test_dir"));
+        test_set.insert(String::from("./src/tests/resources/test_mult.txt"));
+        test_set.insert(String::from("./src/tests/resources/lines.txt"));
+        test_set.insert(String::from("./src/tests/resources/unused.exe"));
+        test_set.insert(String::from("./src/tests/resources/test.txt"));
         assert_eq!(
             get_dir_files(
                 fs::read_dir(PathBuf::from("./src/tests/resources")).unwrap(),
                 Vec::new()
             ),
-            vec![
-                String::from("./src/tests/resources/test_dir"),
-                String::from("./src/tests/resources/test_mult.txt"),
-                String::from("./src/tests/resources/lines.txt"),
-                String::from("./src/tests/resources/unused.exe"),
-                String::from("./src/tests/resources/test.txt"),
-            ],
+            test_set
         )
     }
     #[test]

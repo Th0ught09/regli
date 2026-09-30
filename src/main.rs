@@ -1,5 +1,5 @@
 use clap::Parser;
-use std::collections::HashMap;
+use std::collections::HashSet;
 use env_logger::Target;
 use log::trace;
 use ratatui::{
@@ -124,11 +124,11 @@ impl<T: Clone> ProcessedLine<T> {
 #[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
-    pub items: HashMap<i64, T>,
+    pub items: HashSet<i64, T>,
 }
 
 impl<T> StatefulList<T> {
-    pub fn with_items(items: HashMap<i64, T>) -> Self {
+    pub fn with_items(items: HashSet<i64, T>) -> Self {
         Self {
             state: ListState::default(),
             items,
@@ -227,11 +227,11 @@ impl App {
         self.files = args.files;
         if self.files.is_empty() {
             path = PathBuf::from(args.dir);
-            self.items = shell_utils::start_shell_search(path, self.extensions.clone())
-                .clone()
-                .iter()
-                .map(|string| ProcessedLine::with_item(string.clone()))
-                .collect();
+            // self.misses = shell_utils::start_shell_search(path, self.extensions.clone())
+            //     .clone()
+            //     .iter()
+            //     .map(|string| ProcessedLine::with_item(string.clone()))
+            //     .collect();
         } else {
             self.items = io_util::read_file(&self.files)
                 .iter()
@@ -331,8 +331,8 @@ impl App {
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
-        self.matches = StatefulList::with_items(HashMap::new());
-        self.misses = StatefulList::with_items(HashMap::new());
+        // self.matches = StatefulList::with_items(HashSet::new());
+        // self.misses = StatefulList::with_items(HashSet::new());
     }
 
     fn render(&mut self, frame: &mut Frame) {
