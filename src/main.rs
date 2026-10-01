@@ -397,15 +397,6 @@ impl App {
     }
 
     fn render_messages(&mut self, frame: &mut Frame, matches_area: Rect, misses_area: Rect) {
-        self.matches.clear();
-        self.misses.clear();
-        // matching_utils::update_matches(
-        //     &self.message,
-        //     &mut self.matches.items,
-        //     &mut self.misses.items,
-        //     &self.items,
-        // );
-
         let re = Regex::new(&self.message).unwrap();
         for mut message in self.misses.items.clone() {
             if re.is_match(message.item.as_str()) {
@@ -415,27 +406,26 @@ impl App {
             }
         }
         let matches = List::new(
-            self.items
+            self.matches.items
                 .iter()
-                .filter(|&item| item.has_matched())
-                .map(|item| item.get_item())
+                .map(|item| item.item.clone())
                 .collect::<Vec<_>>(),
         )
         .block(Block::bordered())
         .highlight_style(Style::default().add_modifier(Modifier::BOLD))
         .highlight_symbol("> ");
-        // let misses = List::new(
-        //     self.misses
-        //         .items
-        //         .iter()
-        //         .map(|item| item.item.clone())
-        //         .collect::<Vec<_>>(),
-        // )
-        // .block(Block::bordered())
-        // .highlight_style(Style::default().add_modifier(Modifier::BOLD))
-        // .highlight_symbol("> ");
+        let misses = List::new(
+            self.misses
+                .items
+                .iter()
+                .map(|item| item.item.clone())
+                .collect::<Vec<_>>(),
+        )
+        .block(Block::bordered())
+        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_symbol("> ");
 
-        // frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
-        // frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);
+        frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
+        frame.render_stateful_widget(misses, misses_area, &mut self.misses.state);
     }
 }
