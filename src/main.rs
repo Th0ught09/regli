@@ -21,6 +21,9 @@ pub mod matching_utils;
 pub mod parser;
 pub mod shell_utils;
 pub mod vec_utils;
+pub mod processed_line;
+
+use crate::processed_line::ProcessedLine;
 
 fn main() -> io::Result<()> {
     let args = Cli::parse();
@@ -83,52 +86,52 @@ struct App {
     extensions: Vec<String>,
 }
 
-#[derive(Debug, Default, Clone)]
-pub struct ProcessedLine<T> {
-    item: T,
-    selected: bool,
-    is_match: bool,
-}
-
-impl<T: Clone> ProcessedLine<T> {
-    pub fn with_item(item: T) -> Self {
-        Self {
-            item,
-            selected: false,
-            is_match: false,
-        }
-    }
-    pub fn selected(&mut self) {
-        self.selected = true;
-    }
-    pub fn unselected(&mut self) {
-        self.selected = false;
-    }
-    pub fn matches(&mut self) {
-        self.is_match = true;
-    }
-    pub fn missed(&mut self) {
-        self.is_match = false;
-    }
-    pub fn has_matched(&self) -> bool {
-        self.is_match
-    }
-    pub fn set_item(&mut self, item: T) {
-        self.item = item;
-    }
-    pub fn get_item(&self) -> T {
-        self.item.clone()
-    }
-}
-
+// #[derive(Debug, Default, Clone)]
+// pub struct ProcessedLine<T> {
+//     item: T,
+//     selected: bool,
+//     is_match: bool,
+// }
+//
+// impl<T: Clone> ProcessedLine<T> {
+//     pub fn with_item(item: T) -> Self {
+//         Self {
+//             item,
+//             selected: false,
+//             is_match: false,
+//         }
+//     }
+//     pub fn selected(&mut self) {
+//         self.selected = true;
+//     }
+//     pub fn unselected(&mut self) {
+//         self.selected = false;
+//     }
+//     pub fn matches(&mut self) {
+//         self.is_match = true;
+//     }
+//     pub fn missed(&mut self) {
+//         self.is_match = false;
+//     }
+//     pub fn has_matched(&self) -> bool {
+//         self.is_match
+//     }
+//     pub fn set_item(&mut self, item: T) {
+//         self.item = item;
+//     }
+//     pub fn get_item(&self) -> T {
+//         self.item.clone()
+//     }
+// }
+//
 #[derive(Debug, Default)]
 pub struct StatefulList<T> {
     pub state: ListState,
-    pub items: HashSet<i64, T>,
+    pub items: HashSet<T>,
 }
 
 impl<T> StatefulList<T> {
-    pub fn with_items(items: HashSet<i64, T>) -> Self {
+    pub fn with_items(items: HashSet<T>) -> Self {
         Self {
             state: ListState::default(),
             items,
@@ -227,11 +230,7 @@ impl App {
         self.files = args.files;
         if self.files.is_empty() {
             path = PathBuf::from(args.dir);
-            // self.misses = shell_utils::start_shell_search(path, self.extensions.clone())
-            //     .clone()
-            //     .iter()
-            //     .map(|string| ProcessedLine::with_item(string.clone()))
-            //     .collect();
+            self.misses.items = shell_utils::start_shell_search(path, self.extensions.clone());
         } else {
             self.items = io_util::read_file(&self.files)
                 .iter()
@@ -331,8 +330,8 @@ impl App {
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
-        // self.matches = StatefulList::with_items(HashSet::new());
-        // self.misses = StatefulList::with_items(HashSet::new());
+        self.matches = StatefulList::with_items(HashSet::new());
+        self.misses = StatefulList::with_items(HashSet::new());
     }
 
     fn render(&mut self, frame: &mut Frame) {
@@ -408,7 +407,7 @@ impl App {
         // );
 
         let re = Regex::new(&self.message).unwrap();
-        for mut message in self.items.clone() {
+        for mut message in self.misses.items.clone() {
             if re.is_match(message.item.as_str()) {
                 message.matches();
             } else {

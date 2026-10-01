@@ -4,17 +4,25 @@ use std::{
     path::{Path, PathBuf},
 };
 
-pub fn start_shell_search(dir: PathBuf, valid_extensions: Vec<String>) -> HashSet<String> {
+use crate::processed_line::ProcessedLine;
+
+pub fn start_shell_search(
+    dir: PathBuf,
+    valid_extensions: Vec<String>,
+) -> HashSet<ProcessedLine<String>> {
     let paths = fs::read_dir(dir).unwrap();
     get_dir_files(paths, valid_extensions)
 }
 
-pub fn get_dir_files(paths: fs::ReadDir, valid_extensions: Vec<String>) -> HashSet<String> {
+pub fn get_dir_files(
+    paths: fs::ReadDir,
+    valid_extensions: Vec<String>,
+) -> HashSet<ProcessedLine<String>> {
     let mut files = HashSet::new();
     for path in paths {
         let path = path.unwrap().path();
         if has_correct_extension(&path, &valid_extensions) {
-            files.insert(path.display().to_string());
+            files.insert(ProcessedLine::with_item(path.display().to_string()));
         }
     }
     files
@@ -46,11 +54,21 @@ mod tests {
     #[test]
     fn test_gets_dir_file() {
         let mut test_set = HashSet::new();
-        test_set.insert(String::from("./src/tests/resources/test_dir"));
-        test_set.insert(String::from("./src/tests/resources/test_mult.txt"));
-        test_set.insert(String::from("./src/tests/resources/lines.txt"));
-        test_set.insert(String::from("./src/tests/resources/unused.exe"));
-        test_set.insert(String::from("./src/tests/resources/test.txt"));
+        test_set.insert(ProcessedLine::with_item(String::from(
+            "./src/tests/resources/test_dir",
+        )));
+        test_set.insert(ProcessedLine::with_item(String::from(
+            "./src/tests/resources/test_mult.txt",
+        )));
+        test_set.insert(ProcessedLine::with_item(String::from(
+            "./src/tests/resources/lines.txt",
+        )));
+        test_set.insert(ProcessedLine::with_item(String::from(
+            "./src/tests/resources/unused.exe",
+        )));
+        test_set.insert(ProcessedLine::with_item(String::from(
+            "./src/tests/resources/test.txt",
+        )));
         assert_eq!(
             get_dir_files(
                 fs::read_dir(PathBuf::from("./src/tests/resources")).unwrap(),
