@@ -223,9 +223,9 @@ impl App {
                 self.extensions = args.given_extensions;
             }
         }
-        for arg in &self.extensions {
-            trace!("{}", arg);
-        }
+        // for arg in &self.extensions {
+        //     trace!("{}", arg);
+        // }
 
         self.files = args.files;
         if self.files.is_empty() {
@@ -330,8 +330,6 @@ impl App {
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
-        self.matches = StatefulList::with_items(HashSet::new());
-        self.misses = StatefulList::with_items(HashSet::new());
     }
 
     fn render(&mut self, frame: &mut Frame) {
@@ -398,13 +396,28 @@ impl App {
 
     fn render_messages(&mut self, frame: &mut Frame, matches_area: Rect, misses_area: Rect) {
         let re = Regex::new(&self.message).unwrap();
-        for mut message in self.misses.items.clone() {
+        for message in self.misses.items.clone() {
+            trace!("processing {} in misses", message.item);
             if re.is_match(message.item.as_str()) {
-                message.matches();
-            } else {
-                message.missed();
+                trace!("match in miss");
+                self.misses.items.remove(&message);
+                self.matches.items.insert(message);
             }
         }
+        for message in self.matches.items.clone() {
+            trace!("processing {} in matches", message.item);
+            if !(re.is_match(message.item.as_str())) {
+                trace!("miss in match");
+                self.matches.items.remove(&message);
+                self.misses.items.insert(message);
+            } 
+        }
+        for item in self.matches.items.clone() {
+                trace!("match: {}", item.item);
+            }
+        for item in self.misses.items.clone() {
+                trace!("miss: {}", item.item);
+            }
         let matches = List::new(
             self.matches.items
                 .iter()
