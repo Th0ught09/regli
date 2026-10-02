@@ -2,7 +2,6 @@
 pub struct ProcessedLine<T> {
     pub item: T,
     selected: bool,
-    is_match: bool,
 }
 
 impl<T: Clone> ProcessedLine<T> {
@@ -10,7 +9,6 @@ impl<T: Clone> ProcessedLine<T> {
         Self {
             item,
             selected: false,
-            is_match: false,
         }
     }
     pub fn selected(&mut self) {
@@ -18,15 +16,6 @@ impl<T: Clone> ProcessedLine<T> {
     }
     pub fn unselected(&mut self) {
         self.selected = false;
-    }
-    pub fn matches(&mut self) {
-        self.is_match = true;
-    }
-    pub fn missed(&mut self) {
-        self.is_match = false;
-    }
-    pub fn has_matched(&self) -> bool {
-        self.is_match
     }
     pub fn set_item(&mut self, item: T) {
         self.item = item;
