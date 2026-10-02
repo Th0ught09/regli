@@ -12,7 +12,7 @@ use ratatui::{
 };
 use regex::Regex;
 use std::fs::OpenOptions;
-use std::{env, io, path::PathBuf};
+use std::{io, path::PathBuf};
 use tui_input::Input;
 use tui_input::backend::crossterm::EventHandler;
 pub mod const_utils;
