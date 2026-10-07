@@ -422,7 +422,7 @@ impl App {
             self.matches.items
                 .iter()
                 .map(|item| if item.selected {
-                    ListItem::new(item.item.clone())
+                    ListItem::new(item.item.clone()).black().on_white()
                 } else {
                     ListItem::new(item.item.clone())
                 })
@@ -436,7 +436,7 @@ impl App {
                 .items
                 .iter()
                 .map(|item| if item.selected {
-                    ListItem::new(item.item.clone())
+                    ListItem::new(item.item.clone()).black().on_white()
                 } else {
                     ListItem::new(item.item.clone())
                 })
