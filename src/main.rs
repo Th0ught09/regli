@@ -391,7 +391,7 @@ impl App {
                 .collect::<Vec<_>>(),
         )
         .block(Block::bordered())
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_style(Modifier::REVERSED)
         .highlight_symbol("> ");
         let misses = List::new(
             self.misses
@@ -405,7 +405,7 @@ impl App {
                 .collect::<Vec<_>>(),
         )
         .block(Block::bordered())
-        .highlight_style(Style::default().add_modifier(Modifier::BOLD))
+        .highlight_style(Modifier::REVERSED)
         .highlight_symbol("> ");
 
         frame.render_stateful_widget(matches, matches_area, &mut self.matches.state);
