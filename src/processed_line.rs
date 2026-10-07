@@ -1,7 +1,7 @@
 #[derive(Debug, Default, Clone, PartialEq, Eq, Hash)]
 pub struct ProcessedLine<T> {
     pub item: T,
-    selected: bool,
+    pub selected: bool,
 }
 
 impl<T: Clone> ProcessedLine<T> {

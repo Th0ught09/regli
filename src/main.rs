@@ -8,7 +8,7 @@ use ratatui::{
     layout::{Constraint, Direction, Layout, Rect},
     style::{Color, Modifier, Style, Stylize},
     text::{Line, ToSpan},
-    widgets::{Block, List, ListState, Paragraph},
+    widgets::{Block, List, ListState, ListItem, Paragraph},
 };
 use regex::Regex;
 use std::fs::OpenOptions;
@@ -421,7 +421,11 @@ impl App {
         let matches = List::new(
             self.matches.items
                 .iter()
-                .map(|item| item.item.clone())
+                .map(|item| if item.selected {
+                    ListItem::new(item.item.clone())
+                } else {
+                    ListItem::new(item.item.clone())
+                })
                 .collect::<Vec<_>>(),
         )
         .block(Block::bordered())
@@ -431,7 +435,11 @@ impl App {
             self.misses
                 .items
                 .iter()
-                .map(|item| item.item.clone())
+                .map(|item| if item.selected {
+                    ListItem::new(item.item.clone())
+                } else {
+                    ListItem::new(item.item.clone())
+                })
                 .collect::<Vec<_>>(),
         )
         .block(Block::bordered())
