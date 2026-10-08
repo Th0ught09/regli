@@ -93,11 +93,29 @@ pub struct StatefulList<T> {
 }
 
 impl<T> StatefulList<T> {
-    pub fn with_items(items: HashSet<T>) -> Self {
+    pub fn with_items(mut self, items: HashSet<T>) -> Self {
+        self.state.select(Some(1));
         Self {
             state: ListState::default(),
             items,
         }
+    }
+
+    pub fn render(&mut self) {
+        let i = match self.state.selected() {
+            Some(i) => {
+                if i >= self.items.len() - 1 {
+                    0
+                } else {
+                    i
+                }
+            }
+            _ => {
+                trace!("no selection");
+                0
+            }
+        };
+        self.state.select(Some(i));
     }
 
     pub fn next(&mut self) {
@@ -199,8 +217,9 @@ impl App {
                 .map(|string| ProcessedLine::with_item(string.clone()))
                 .collect();
         }
+
+        terminal.draw(|frame| self.render(frame))?;
         loop {
-            terminal.draw(|frame| self.render(frame))?;
             let event = event::read()?;
             if let Event::Key(key) = event {
                 match self.input_mode {
@@ -224,6 +243,9 @@ impl App {
                     },
                 }
             }
+            terminal.draw(|frame| self.render(frame))?;
+            self.matches.render();
+            self.misses.render();
         }
     }
 
