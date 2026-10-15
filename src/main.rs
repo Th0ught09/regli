@@ -235,7 +235,7 @@ impl App {
                         KeyCode::Char('k') => self.on_up(),
                         KeyCode::Char('h') => self.on_left(),
                         KeyCode::Char('l') => self.on_right(),
-                        // KeyCode::Enter => self.select_current(),
+                        KeyCode::Enter => self.select_current(),
                         KeyCode::Char('q') => return Ok(()), // exit
                         _ => {}
                     },
@@ -294,29 +294,10 @@ impl App {
         }
     }
 
-    // fn select_current(&mut self) { // Cooked rn, fix other stuff
-    //     if let Some(i) = self.matches.state.selected() {
-    //         if shell_utils::is_path_dir(&self.matches.items[i].item) {
-    //             if self.search_mode == SearchMode::Shell {
-    //                 self.items = shell_utils::start_shell_search(
-    //                     PathBuf::from(&self.matches.items[i].item),
-    //                     self.extensions.clone(),
-    //                 )
-    //                 .clone()
-    //                 .iter()
-    //                 .map(|string| ProcessedLine::with_item(string.clone()))
-    //                 .collect();
-    //             }
-    //         } else {
-    //             let files = self.matches.items[i].item.clone();
-    //             self.items = io_util::read_file(&[files])
-    //                 .iter()
-    //                 .map(|string| ProcessedLine::with_item(string.clone()))
-    //                 .collect();
-    //             trace!("File found");
-    //         }
-    //     }
-    // }
+    fn select_current(&mut self) { // Cooked rn, fix other stuff
+        if let Some(i) = self.matches.state.selected() {
+        }
+    }
 
     fn get_message(&mut self) {
         self.message = self.input.value().to_string();
