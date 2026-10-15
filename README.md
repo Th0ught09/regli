@@ -36,6 +36,7 @@ cargo test
 The following cli options are available
 
 | Option | Meaning |
+|---|---|
 | `-u` | Filter files in shell mode based on extension |
 | `-g` | Pass in extensions to filter by |
 | `-d` | Which directory to start in for shell mode |
