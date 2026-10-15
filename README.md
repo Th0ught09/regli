@@ -3,6 +3,10 @@
 REGex LIve parser, a tui tool that allows you to filter matches and non
 matches in file inputs
 
+https://github.com/user-attachments/assets/fd51c27e-aa35-46bc-8d02-f924558c36dd
+
+
+
 ## Usage
 
 `regli <file.txt>` to render all contents of the file into the tool.
